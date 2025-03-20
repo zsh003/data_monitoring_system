@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.qqcn.emp.mapper.EmpMapper">
+<mapper namespace="cn.qqcn.mapper.EmpMapper">
     
     <resultMap id="empMap" type="Emp">
         <id column="sno" property="sno" />
@@ -25,13 +25,13 @@
     </resultMap>
     
     <!-- 查询用户列表数据 -->
-    <select id="getEmpList" parameterType="cn.qqcn.emp.vo.EmpQuery" resultMap="empMap">
+    <select id="getEmpList" parameterType="cn.qqcn.entity.vo.EmpQuery" resultMap="empMap">
         select * from information a
         <include refid="getEmpListWhere"></include>
         limit #{start},#{limit}
     </select>
     <!-- 统计用户数据量 -->
-    <select id="countEmpList" parameterType="cn.qqcn.emp.vo.EmpQuery" resultType="Long">
+    <select id="countEmpList" parameterType="cn.qqcn.entity.vo.EmpQuery" resultType="Long">
         select count(1) from information a
         <include refid="getEmpListWhere"></include>
     </select>

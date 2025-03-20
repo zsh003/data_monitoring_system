@@ -1,7 +1,7 @@
 package cn.qqcn.test;
 
 
-import cn.qqcn.data.service.MailService;
+import cn.qqcn.service.MailService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

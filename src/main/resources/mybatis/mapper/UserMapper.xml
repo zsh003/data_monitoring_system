@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.qqcn.user.mapper.UserMapper">
+<mapper namespace="cn.qqcn.mapper.UserMapper">
     <resultMap id="applyMap" type="apply">
         <id column="sno" property="sno" />
         <result column="name" property="name"/>
@@ -21,11 +21,11 @@
         set kind=#{kind}
         where sno=#{sno}
     </update>
-    <select id="getapplyList" parameterType="cn.qqcn.user.vo.Apply" resultMap="applyMap">
+    <select id="getapplyList" parameterType="cn.qqcn.entity.vo.ApplyVO" resultMap="applyMap">
         select sno,name from user where kind='待审核'
     </select>
 
-    <select id="countapplyList" parameterType="cn.qqcn.user.vo.Apply" resultType="Long">
+    <select id="countapplyList" parameterType="cn.qqcn.entity.vo.ApplyVO" resultType="Long">
         select count(1) from user
     </select>
 

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.qqcn.data.mapper.DataMapper">
+<mapper namespace="cn.qqcn.mapper.DataMapper">
 
     <resultMap id="dataMap" type="data">
         <id column="num" property="num" />
@@ -49,11 +49,11 @@
             limit 5
     </select>
     <!-- 查询数据列表 -->
-    <select id="getDataList" parameterType="cn.qqcn.data.vo.DataQuery" resultMap="dataMap">
+    <select id="getDataList" parameterType="cn.qqcn.entity.vo.DataQuery" resultMap="dataMap">
         select * from data
         limit #{start},#{limit}
     </select>
-    <select id="countDataList" parameterType="cn.qqcn.data.vo.DataQuery" resultType="Long">
+    <select id="countDataList" parameterType="cn.qqcn.entity.vo.DataQuery" resultType="Long">
         select count(1) from data
     </select>
 
@@ -63,7 +63,7 @@
         where time between #{start} and #{end}
     </select>
 
-    <select id="errorselect" parameterType="cn.qqcn.data.vo.DataQuery" resultMap="dataMap">
+    <select id="errorselect" parameterType="cn.qqcn.entity.vo.DataQuery" resultMap="dataMap">
         SELECT * FROM `data`
         where
         speed>200
@@ -87,7 +87,7 @@
         -200>dir_y
     </select>
 
-    <select id="counterrorList" parameterType="cn.qqcn.data.vo.DataQuery" resultType="Long">
+    <select id="counterrorList" parameterType="cn.qqcn.entity.vo.DataQuery" resultType="Long">
         select count(1) from data
         where
             speed>200
