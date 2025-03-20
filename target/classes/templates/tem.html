@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>电力工业设备数据监测系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" th:href="@{images/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/layuimini.css?v=2.0.4.2}" media="all">
+    <link rel="stylesheet" th:href="@{/css/themes/default.css}" media="all">
+    <link rel="stylesheet" th:href="@{/lib/font-awesome-4.7.0/css/font-awesome.min.css}" media="all">
+
+<!--    <link rel="stylesheet" th:href="@{/lib/layui-v2.6.3/css/layui.css}" media="all">-->
+<!--    <link rel="stylesheet" th:href="@{/lib/font-awesome-4.7.0/css/font-awesome.min.css}" media="all">-->
+<!--    <link rel="stylesheet" th:href="@{/css/public.css}" media="all">-->
+    <style>
+        .top-panel {
+            border: 1px solid #eceff9;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .top-panel > .layui-card-body{
+            height: 60px;
+        }
+        .top-panel-number{
+            line-height:60px;
+            font-size: 30px;
+            border-right:1px solid #eceff9;
+        }
+        .top-panel-tips{
+            line-height:30px;
+            font-size: 12px
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-main">
+
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs12 layui-col-md9">
+            <div id="echarts-records" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
+        </div>
+    </div>
+
+
+
+</div>
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}" charset="utf-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/js/lay-config.js?v=2.0.0}" charset="utf-8"></script>
+<script th:inline="javascript">
+    var ctxPath = [[@{/}]];
+        layui.use(['layer', 'echarts'], function () {
+            // var $ = layui.jquery,
+            var layer = layui.layer,
+                echarts = layui.echarts;
+            /**
+             * 报表功能
+             */
+            var lineChart = echarts.init(document.getElementById('echarts-records'));
+            // lineChart.showLoading();
+            var times = []; //x
+            var tems = []; //y
+            $.ajax({
+                type:"post",
+                url:"http://localhost:9981/data/gettem",
+                dataType:"json",
+                async:false,
+                success: function (result) {
+                    for (var i = 0; i < result.length; i++){
+                        times.push(result[i].time);
+                        tems.push(result[i].tem);
+                        console.log(result)
+                        if (result[i].tem>200){
+                            layer.msg('数据发生异常,请去异常数据页面查看详情');
+                            var url=ctxPath + 'data/alert'
+                            $.post(url)}
+                    }
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert(XMLHttpRequest.readyState);//当数据请求失败可以查看请求的状态
+                }
+            });
+            lineChart.hideLoading();
+            var option={
+                title: {
+                    text: '折线图',
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                legend: {
+                    data: ['参数2']
+                },
+                tooltip:{},
+                //x轴
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: times,
+                    axisLine:{
+                        onZero:false
+                    }
+                },
+                //y轴没有显式设置，根据值自动生成y轴
+                yAxis: {
+                    type: 'value'
+                },
+                //数据-data是最终要显示的数据
+                series: [{
+                    name: '温度',
+                    type: 'line',
+                    data: tems
+                }]
+            };
+            lineChart.setOption(option);
+
+            window.reloadView = function () {window.location.reload();}
+            setInterval('reloadView()',15000);
+
+
+            // echarts 窗口缩放自适应
+            window.onresize = function () {
+                lineChart.resize();
+            }
+
+        });
+</script>
+</body>
+</html>

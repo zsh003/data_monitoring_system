@@ -1,0 +1,13 @@
+INSERT INTO `data` (`num`, `time`, `speed`, `tem`, `yingli`, `dir_x`, `dir_y`) VALUES (1, '2023-02-02 12:23:36', 0.036, 20.803, 5.465, 0.8, 0.683);
+INSERT INTO `data` (`num`, `time`, `speed`, `tem`, `yingli`, `dir_x`, `dir_y`) VALUES (2, '2023-02-02 12:23:37', 0.046, 20.781, 5.273, 0.799, 0.682);
+INSERT INTO `data` (`num`, `time`, `speed`, `tem`, `yingli`, `dir_x`, `dir_y`) VALUES (3, '2023-02-02 12:23:38', 0.003, 20.788, 4.132, 0.801, 0.684);
+INSERT INTO `data` (`num`, `time`, `speed`, `tem`, `yingli`, `dir_x`, `dir_y`) VALUES (4, '2023-02-02 12:23:39', 0.036, 20.801, 2.811, 0.8, 0.684);
+INSERT INTO `data` (`num`, `time`, `speed`, `tem`, `yingli`, `dir_x`, `dir_y`) VALUES (5, '2023-02-02 12:23:40', 0.045, 20.807, 2.346, 0.801, 0.683);
+INSERT INTO `data` (`num`, `time`, `speed`, `tem`, `yingli`, `dir_x`, `dir_y`) VALUES (6, '2023-02-02 12:23:41', 0.059, 20.81, 2.625, 0.801, 0.683);
+INSERT INTO `data` (`num`, `time`, `speed`, `tem`, `yingli`, `dir_x`, `dir_y`) VALUES (7, '2023-02-02 12:23:42', 0.014, 20.803, 2.154, 0.801, 0.684);
+INSERT INTO `data` (`num`, `time`, `speed`, `tem`, `yingli`, `dir_x`, `dir_y`) VALUES (8, '2023-02-02 12:23:43', 0.291, 20.824, 2.03, 0.801, 0.684);
+INSERT INTO `data` (`num`, `time`, `speed`, `tem`, `yingli`, `dir_x`, `dir_y`) VALUES (9, '2023-02-02 12:23:44', 0.447, 20.824, 3.394, 0.801, 0.683);
+INSERT INTO `data` (`num`, `time`, `speed`, `tem`, `yingli`, `dir_x`, `dir_y`) VALUES (10, '2023-02-02 12:23:45', 0.552, 20.84, 2.755, 0.8, 0.683);
+INSERT INTO `data` (`num`, `time`, `speed`, `tem`, `yingli`, `dir_x`, `dir_y`) VALUES (16, '2023-04-15 21:41:08', 566, 7575, 775, 6, 565);
+INSERT INTO `data` (`num`, `time`, `speed`, `tem`, `yingli`, `dir_x`, `dir_y`) VALUES (17, '2023-04-15 21:41:24', 65, 65, 65, 6, 65);
+INSERT INTO `data` (`num`, `time`, `speed`, `tem`, `yingli`, `dir_x`, `dir_y`) VALUES (18, '2023-04-12 21:41:35', 665, 65, 65, 65, 65);
