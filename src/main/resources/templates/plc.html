@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>电力工业设备数据监测系统 - PLC列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" th:href="@{images/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/layuimini.css?v=2.0.4.2}" media="all">
+    <link rel="stylesheet" th:href="@{/css/themes/default.css}" media="all">
+    <link rel="stylesheet" th:href="@{/lib/font-awesome-4.7.0/css/font-awesome.min.css}" media="all">
+    <style>
+        /* 设置plc列表容器的样式 */
+        #plc-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;  /*卡片之间的间距 */
+        }
+
+        /* 每个PLC项目的样式 */
+        .plc-item {
+            display: flex;
+            flex-direction: row;
+            flex: 1 1 40%; /* 这将允许每行有两个项目，留出一点空间作为间隔 */
+            margin: 5px 0; /* 上下边距 */
+            padding: 10px;
+            border: 1px solid #ccc; /* 边框颜色和宽度 */
+            border-radius: 5px; /* 圆角程度 */
+            box-shadow: 2px 2px 12px rgba(0,0,0,0.1); /* 轻微阴影效果 */
+        }
+
+        .plc-item:last-child {
+            border-bottom: none;
+        }
+        .plc-item img {
+            width: 60px;
+            height: 60px;
+            margin-right: 15px;
+        }
+        .plc-details {
+            flex-grow: 1;
+            margin-left: 30px;
+        }
+
+        .plc-image {
+            width: 250px !important;
+            height: 250px !important;
+            object-fit: cover !important;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid green;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-main">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs12 layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header">PLC列表</div>
+                <div class="layui-card-body">
+                    <div id="plc-list">
+                        <!-- 动态加载的PLC列表 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}" charset="utf-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/js/lay-config.js?v=2.0.0}" charset="utf-8"></script>
+<script th:inline="javascript">
+    function renderPLCItem(plc) {
+        return `
+            <div class="plc-item" id="plc-item-${plc.id}">
+                <img src="${plc.image}" alt="${plc.title}" class="plc-image">
+                <div class="plc-details">
+                    <h2 style="margin-bottom: 10px">${plc.title}</h2>
+                    <p><strong>IP地址: </strong> ${plc.ipAddress}</p>
+                    <p><strong>IP端口: </strong> ${plc.ipPort}</p>
+                    <p>
+                        <strong>连接状态: </strong> <span class="plc-status">未测试</span>
+                        <span style="color: green; cursor: pointer; margin-left: 30px" class="test-connection"
+                                data-ip="${plc.ipAddress}" data-id="${plc.id}"
+                        >
+                        测试连接
+                        </span>
+                        <span class="loading" style="display: none"></span> <!-- 加载动画 -->
+                    </p>
+                    <p><strong>产品系列: </strong> ${plc.range}</p>
+                    <p><strong>产品类型: </strong> ${plc.type}</p>
+                    <p><strong>额定电源电压: </strong> ${plc.voltage}</p>
+                    <p><strong>离散输入数量: </strong> ${plc.inputs}</p>
+                    <p><strong>模拟输入数量: </strong> ${plc.analogInputs}</p>
+                    <p><strong>离散输出类型: </strong> ${plc.outputType}</p>
+                    <p><strong>离散输出数量: </strong> ${plc.outputs}</p>
+                    <p><strong>离散输出电压: </strong> ${plc.outputVoltage}</p>
+                    <p><strong>离散输出电流: </strong> ${plc.outputCurrent}</p>
+                </div>
+            </div>
+        `;
+    }
+
+    function testConnection(ip, cardId) {
+        layer = layui.layer;
+        var cardLoading = $('#plc-item-' + cardId + ' .loading')
+        var statusElement =$('#plc-item-' + cardId + ' .plc-status')
+        $.ajax({
+            url: '/api/ping', // 确保这是您的Spring Boot应用的正确路径
+            method: 'GET',
+            data: { ip: ip },
+            dataType: 'json',
+            success: function(data) {
+                // layer.msg(data.pingResults)
+                if (data.success) {
+                    statusElement.text('在线')
+                    statusElement.css('color', 'green')
+                } else {
+                    statusElement.text('离线')
+                    statusElement.css('color', 'red')
+                }
+                cardLoading.hide();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error during API call:', textStatus, errorThrown);
+                statusElement.text('离线')
+                statusElement.css('color', 'red')
+                cardLoading.hide();
+            }
+        });
+    }
+    function loadPLCData() {
+        // 假数据
+        var plcData = [
+            {
+                id: 1,
+                title: "Modicon M221 PLC",
+                image: "/images/plc/1.png",
+                ipAddress: "172.172.12.133",
+                ipPort: "502",
+                range:"Modicon M221",
+                type:"逻辑控制器",
+                voltage:"100...240 V AC",
+                inputs:"9 (符合IEC 61131-2 Type 1)",
+                analogInputs:"2 (输入范围: 0...10 V)",
+                outputType:"继电器常开",
+                outputs:"7 继电器",
+                outputVoltage:"5...125 V DC, 5...250 V AC",
+                outputCurrent:"2 A",
+                status: "在线",
+            },
+            {
+                id: 2,
+                title: "Modicon M221 PLC",
+                image: "/images/plc/1.png",
+                ipAddress: "192.168.1.2",
+                ipPort: "503",
+                range:"Modicon M221",
+                type:"逻辑控制器",
+                voltage:"100...240 V AC",
+                inputs:"9 (符合IEC 61131-2 Type 1)",
+                analogInputs:"2 (输入范围: 0...10 V)",
+                outputType:"继电器常开",
+                outputs:"7 继电器",
+                outputVoltage:"5...125 V DC, 5...250 V AC",
+                outputCurrent:"2 A",
+                status: "离线",
+            },
+            {
+                id: 3,
+                title: "Modicon M221 PLC",
+                image: "/images/plc/1.png",
+                ipAddress: "192.168.1.2",
+                ipPort: "503",
+                range:"Modicon M221",
+                type:"逻辑控制器",
+                voltage:"100...240 V AC",
+                inputs:"9 (符合IEC 61131-2 Type 1)",
+                analogInputs:"2 (输入范围: 0...10 V)",
+                outputType:"继电器常开",
+                outputs:"7 继电器",
+                outputVoltage:"5...125 V DC, 5...250 V AC",
+                outputCurrent:"2 A",
+                status: "离线",
+            },
+            {
+                id: 4,
+                title: "Modicon M221 PLC",
+                image: "/images/plc/1.png",
+                ipAddress: "192.168.1.2",
+                ipPort: "503",
+                range:"Modicon M221",
+                type:"逻辑控制器",
+                voltage:"100...240 V AC",
+                inputs:"9 (符合IEC 61131-2 Type 1)",
+                analogInputs:"2 (输入范围: 0...10 V)",
+                outputType:"继电器常开",
+                outputs:"7 继电器",
+                outputVoltage:"5...125 V DC, 5...250 V AC",
+                outputCurrent:"2 A",
+                status: "离线",
+            }
+        ];
+
+        var plcListContainer = $('#plc-list');
+        plcListContainer.empty();
+        plcData.forEach(function (plc) {
+            plcListContainer.append(renderPLCItem(plc));
+        });
+
+        // 绑定点击事件
+        $('.test-connection').click(function() {
+            var ip = $(this).data('ip'); // 获取data-ip属性值
+            var cardId = $(this).data('id'); // 获取data-id属性值
+            //显示加载动画
+            $(this).next('.loading').show()
+            testConnection(ip, cardId);
+        });
+
+    }
+
+    $(document).ready(function () {
+        loadPLCData();
+        // 每分钟刷新一次PLC列表（模拟实时更新）
+        //setInterval(loadPLCData, 60000);
+    });
+</script>
+</body>
+</html>

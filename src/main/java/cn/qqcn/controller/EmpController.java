@@ -1,5 +1,5 @@
 package cn.qqcn.controller;
-import cn.qqcn.common.vo.Result;
+import cn.qqcn.entity.vo.ResultVO;
 import cn.qqcn.entity.Emp;
 import cn.qqcn.service.EmpService;
 import cn.qqcn.entity.vo.EmpQuery;
@@ -31,18 +31,18 @@ public class  EmpController {
 
     @GetMapping("/list")
     @ResponseBody
-    public Result<Object> getEmpList(EmpQuery param){
+    public ResultVO<Object> getEmpList(EmpQuery param){
         List<Emp> list = empService.getEmpList(param);
         Long count = empService.countEmpList(param);
-        return Result.success(list,count);
+        return ResultVO.success(list,count);
     }
 
     @PostMapping("")
     @ResponseBody
-    public Result<Object> addEmp(Emp emp,HttpSession session){
+    public ResultVO<Object> addEmp(Emp emp, HttpSession session){
         System.out.println(emp);
         empService.addEmp(emp);
-        return Result.success("新增用户成功！");
+        return ResultVO.success("新增用户成功！");
     }
 
     @GetMapping("/add/ui")
@@ -56,9 +56,9 @@ public class  EmpController {
 
     @DeleteMapping("/{ids}")
     @ResponseBody
-    public Result<Object> deleteEmpByIds(@PathVariable("ids") String ids){
+    public ResultVO<Object> deleteEmpByIds(@PathVariable("ids") String ids){
         empService.deleteEmpByIds(ids);
-        return Result.success("删除用户成功！");
+        return ResultVO.success("删除用户成功！");
     }
 
     @GetMapping("/{id}")
@@ -74,8 +74,8 @@ public class  EmpController {
 
     @PutMapping("")
     @ResponseBody
-    public Result<Object> updateEmp(Emp emp){
+    public ResultVO<Object> updateEmp(Emp emp){
         empService.updateEmp(emp);
-        return Result.success("用户信息修改成功！");
+        return ResultVO.success("用户信息修改成功！");
     }
 }

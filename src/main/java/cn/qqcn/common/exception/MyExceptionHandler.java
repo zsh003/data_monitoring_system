@@ -1,6 +1,6 @@
 package cn.qqcn.common.exception;
 
-import cn.qqcn.common.vo.Result;
+import cn.qqcn.entity.vo.ResultVO;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,7 +10,7 @@ public class MyExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler(Exception.class)
-    public Result<Object> myHandler(Exception e){
-        return Result.fail("系统错误：" + e.getMessage());
+    public ResultVO<Object> myHandler(Exception e){
+        return ResultVO.fail("系统错误：" + e.getMessage());
     }
 }

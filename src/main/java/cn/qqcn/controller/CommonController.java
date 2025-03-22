@@ -1,5 +1,6 @@
 package cn.qqcn.controller;
 
+import cn.qqcn.entity.vo.ResultVO;
 import cn.qqcn.service.CraneService;
 import cn.qqcn.entity.Kind;
 import cn.qqcn.service.UserService;
@@ -85,6 +86,10 @@ public class CommonController {
         return "applycheck";
     }
 
+    @GetMapping("/plc")
+    public String plc(){
+        return "plc";
+    }
 
     @GetMapping("/apply")
     public void apply(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws IOException {
@@ -103,4 +108,5 @@ public class CommonController {
     public void captcha(HttpServletRequest request, HttpServletResponse response) throws Exception {
         CaptchaUtil.out(request, response);
     }
+
 }

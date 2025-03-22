@@ -2,7 +2,7 @@ package cn.qqcn.controller;
 
 import cn.qqcn.entity.*;
 import cn.qqcn.service.MailService;
-import cn.qqcn.common.vo.Result;
+import cn.qqcn.entity.vo.ResultVO;
 import cn.qqcn.service.DataService;
 import cn.qqcn.entity.vo.DataQuery;
 import org.junit.jupiter.api.Assertions;
@@ -69,32 +69,32 @@ public class DataController {
 
     @GetMapping("/getlist")
     @ResponseBody
-    public Result<Object> getDataList(DataQuery param){
+    public ResultVO<Object> getDataList(DataQuery param){
         List<data> list = dataService.getDataList(param);
         Long count = dataService.countDataList(param);
-        return Result.success(list,count);
+        return ResultVO.success(list,count);
     }
 
     @GetMapping("/errorselect")
     @ResponseBody
-    public Result<Object> errorselect(DataQuery param){
+    public ResultVO<Object> errorselect(DataQuery param){
         List<data> list = dataService.errorselect(param);
         Long count = dataService.counterrorList(param);
-        return Result.success(list,count);
+        return ResultVO.success(list,count);
     }
 
     @PostMapping("/alert")
     @ResponseBody
-    public Result<Object> sendSimpleText(){
+    public ResultVO<Object> sendSimpleText(){
         String to="zhujiongos@126.com";
         String title="异常报警";
         String content="起重机数据出现异常，请及时查看处理。";
         Assertions.assertTrue(mailService.sendSimpleText(to,title,content));
-        return Result.success();
+        return ResultVO.success();
     }
     @PostMapping("/alertfiles")
     @ResponseBody
-    public Result<Object> sendWithWithEnclosure(){
+    public ResultVO<Object> sendWithWithEnclosure(){
         String to="zhujiongos@126.com";
         String title="异常报警";
         String content="起重机数据出现异常，请及时查看处理。";
@@ -102,7 +102,7 @@ public class DataController {
                 "C:\\Users\\zhujiong\\Downloads\\table_1(4).csv"
         };
         Assertions.assertTrue(mailService.sendWithWithEnclosure(to,title,content,filePaths));
-        return Result.success();
+        return ResultVO.success();
     }
 
 

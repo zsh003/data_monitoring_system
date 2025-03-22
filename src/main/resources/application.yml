@@ -19,6 +19,7 @@ spring:
 
   thymeleaf:
     cache: false
+    mode: HTML5
 
   mvc:
     hiddenmethod:

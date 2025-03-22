@@ -41,7 +41,12 @@
           "icon": "fa fa-file-text",
           "target": "_self",
           "child": [
-
+            {
+              "title": "PLC统计",
+              "href": "/plc",
+              "icon": "layui-icon layui-icon-component",
+              "target": "_self"
+            },
             {
               "title": "参数1图表",
               "href": "/speed",
@@ -92,7 +97,6 @@
           "icon": "fa fa-calendar",
           "target": "_self"
         }
-
       ]
     }
   ]
