@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>电力工业设备数据监测系统</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" th:href="@{images/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/layuimini.css?v=2.0.4.2}" media="all">
+    <link rel="stylesheet" th:href="@{/css/themes/default.css}" media="all">
+    <link rel="stylesheet" th:href="@{/lib/font-awesome-4.7.0/css/font-awesome.min.css}" media="all">
+
+    <!--    <link rel="stylesheet" th:href="@{/lib/layui-v2.6.3/css/layui.css}" media="all">-->
+    <!--    <link rel="stylesheet" th:href="@{/lib/font-awesome-4.7.0/css/font-awesome.min.css}" media="all">-->
+    <!--    <link rel="stylesheet" th:href="@{/css/public.css}" media="all">-->
+    <style>
+        .top-panel {
+            border: 1px solid #eceff9;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .top-panel > .layui-card-body{
+            height: 60px;
+        }
+        .top-panel-number{
+            line-height:60px;
+            font-size: 30px;
+            border-right:1px solid #eceff9;
+        }
+        .top-panel-tips{
+            line-height:30px;
+            font-size: 12px
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-main">
+
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs12 layui-col-md9">
+            <div id="echarts-records" style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
+            <div id="echarts-records2" style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
+            <div id="echarts-records3" style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
+            <div id="echarts-records4" style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
+
+        </div>
+    </div>
+
+
+
+</div>
+<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}" charset="utf-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/js/lay-config.js?v=2.0.0}" charset="utf-8"></script>
+<script th:inline="javascript">
+    function loadTempChart(lineChart, id) {
+        var times = []; //x
+        var data = []; //y
+        var txt = "温度"
+        $.ajax({
+            type:"get",
+            url:"http://localhost:9981/sensordata/gettemp/"+id,
+            dataType:"json",
+            async:false,
+            success: function (result) {
+                for (var i = 0; i < result.length; i++){
+                    times.push(result[i].time);
+                    data.push(result[i].temperature);
+                    if (result[i].temperature>50){
+                        layer.msg('数据发生异常,请去异常数据页面查看详情');
+                        var url=ctxPath + 'data/alert'
+                        $.post(url)}
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(XMLHttpRequest.readyState);//当数据请求失败可以查看请求的状态
+            }
+        });
+        lineChart.hideLoading();
+        var option={
+            title: {
+                text: txt,
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {
+                        show: true
+                    }
+                }
+            },
+            legend: {
+                data: [txt]
+            },
+            tooltip:{},
+            //x轴
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: times,
+                axisLine:{
+                    onZero:false
+                }
+            },
+            //y轴没有显式设置，根据值自动生成y轴
+            yAxis: {
+                type: 'value'
+            },
+            //数据-data是最终要显示的数据
+            series: [{
+                name: txt,
+                type: 'line',
+                data: data,
+                itemStyle: {
+                    normal: {
+                        lineStyle: {
+                            color: 'red' // 折线颜色
+                        }
+                    }
+                }
+            }]
+        };
+        lineChart.setOption(option);
+    }
+    function loadSpeedChart(lineChart, id) {
+        var times = []; //x
+        var data = []; //y
+        var txt = "速度"
+        $.ajax({
+            type:"get",
+            url:"http://localhost:9981/sensordata/getspeed/"+id,
+            dataType:"json",
+            async:false,
+            success: function (result) {
+                for (var i = 0; i < result.length; i++){
+                    times.push(result[i].time);
+                    data.push(result[i].speed);
+                    // if (result[i].temperature>50){
+                    //     layer.msg('数据发生异常,请去异常数据页面查看详情');
+                    //     var url=ctxPath + 'data/alert'
+                    //     $.post(url)}
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(XMLHttpRequest.readyState);//当数据请求失败可以查看请求的状态
+            }
+        });
+        lineChart.hideLoading();
+        var option={
+            title: {
+                text: txt,
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {
+                        show: true
+                    }
+                }
+            },
+            legend: {
+                data: [txt]
+            },
+            tooltip:{},
+            //x轴
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: times,
+                axisLine:{
+                    onZero:false
+                }
+            },
+            //y轴没有显式设置，根据值自动生成y轴
+            yAxis: {
+                type: 'value'
+            },
+            //数据-data是最终要显示的数据
+            series: [{
+                name: txt,
+                type: 'line',
+                data: data,
+                itemStyle: {
+                    normal: {
+                        lineStyle: {
+                            color: 'blue' // 折线颜色
+                        }
+                    }
+                }
+            }]
+        };
+        lineChart.setOption(option);
+    }
+    function loadLightChart(lineChart, id) {
+        var times = []; //x
+        var data = []; //y
+        var txt = "亮度"
+        $.ajax({
+            type:"get",
+            url:"http://localhost:9981/sensordata/getlight/"+id,
+            dataType:"json",
+            async:false,
+            success: function (result) {
+                for (var i = 0; i < result.length; i++){
+                    times.push(result[i].time);
+                    data.push(result[i].light);
+                    // if (result[i].temperature>50){
+                    //     layer.msg('数据发生异常,请去异常数据页面查看详情');
+                    //     var url=ctxPath + 'data/alert'
+                    //     $.post(url)}
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(XMLHttpRequest.readyState);//当数据请求失败可以查看请求的状态
+            }
+        });
+        lineChart.hideLoading();
+        var option={
+            title: {
+                text: txt,
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {
+                        show: true
+                    }
+                }
+            },
+            legend: {
+                data: [txt]
+            },
+            tooltip:{},
+            //x轴
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: times,
+                axisLine:{
+                    onZero:false
+                }
+            },
+            //y轴没有显式设置，根据值自动生成y轴
+            yAxis: {
+                type: 'value'
+            },
+            //数据-data是最终要显示的数据
+            series: [{
+                name: txt,
+                type: 'line',
+                data: data,
+                itemStyle: {
+                    normal: {
+                        lineStyle: {
+                            color: 'purple' // 折线颜色
+                        }
+                    }
+                }
+            }]
+        };
+        lineChart.setOption(option);
+    }
+    function loadAngleChart(lineChart, id) {
+        var times = []; //x
+        var data = []; //y
+        var txt = "角度"
+        $.ajax({
+            type:"get",
+            url:"http://localhost:9981/sensordata/getangle/"+id,
+            dataType:"json",
+            async:false,
+            success: function (result) {
+                for (var i = 0; i < result.length; i++){
+                    times.push(result[i].time);
+                    data.push(result[i].angle);
+                    // if (result[i].temperature>50){
+                    //     layer.msg('数据发生异常,请去异常数据页面查看详情');
+                    //     var url=ctxPath + 'data/alert'
+                    //     $.post(url)}
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(XMLHttpRequest.readyState);//当数据请求失败可以查看请求的状态
+            }
+        });
+        lineChart.hideLoading();
+        var option={
+            title: {
+                text: txt,
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {
+                        show: true
+                    }
+                }
+            },
+            legend: {
+                data: [txt]
+            },
+            tooltip:{},
+            //x轴
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: times,
+                axisLine:{
+                    onZero:false
+                }
+            },
+            //y轴没有显式设置，根据值自动生成y轴
+            yAxis: {
+                type: 'value'
+            },
+            //数据-data是最终要显示的数据
+            series: [{
+                name: txt,
+                type: 'line',
+                data: data,
+                itemStyle: {
+                    normal: {
+                        lineStyle: {
+                            color: 'green' // 折线颜色
+                        }
+                    }
+                }
+            }]
+        };
+        lineChart.setOption(option);
+    }
+    var ctxPath = [[@{/}]];
+
+        layui.use(['layer', 'echarts'], function () {
+            // var $ = layui.jquery,
+            var layer = layui.layer,
+                echarts = layui.echarts;
+            /**
+             * 报表功能
+             */
+            var lineChart = echarts.init(document.getElementById('echarts-records'));
+            var lineChart2 = echarts.init(document.getElementById('echarts-records2'));
+            var lineChart3 = echarts.init(document.getElementById('echarts-records3'));
+            var lineChart4 = echarts.init(document.getElementById('echarts-records4'));
+
+            var plcid = 2;
+            loadTempChart(lineChart, plcid);
+            loadSpeedChart(lineChart2, plcid);
+            loadLightChart(lineChart3, plcid);
+            loadAngleChart(lineChart4, plcid);
+            window.reloadView = function () {window.location.reload();}
+            // setInterval('reloadView()',15000);
+
+
+            // echarts 窗口缩放自适应
+            window.onresize = function () {
+                lineChart.resize();
+            }
+
+        });
+</script>
+</body>
+</html>

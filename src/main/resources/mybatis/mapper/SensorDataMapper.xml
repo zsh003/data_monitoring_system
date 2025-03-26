@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.qqcn.mapper.SensorDataMapper">
+    <resultMap id="dataMap" type="SensorData">
+        <id column="plc_id" property="plcId" />
+        <result column="time" property="time"/>
+        <result column="speed" property="speed"/>
+        <result column="temperature" property="temperature"/>
+        <result column="light" property="light"/>
+        <result column="angle" property="angle"/>
+    </resultMap>
+
+    <select id="list" resultType="cn.qqcn.entity.SensorData" resultMap="dataMap">
+        select * from sensor_data
+        limit #{start},#{limit}
+    </select>
+    <select id="countDataList" resultType="java.lang.Long">
+        select count(1) from sensor_data
+    </select>
+    <select id="getSpeed" resultType="cn.qqcn.entity.SensorData">
+        select time,speed from sensor_data
+        where plc_id = #{plcid}
+        order by time
+    </select>
+    <select id="getTemperature" resultType="cn.qqcn.entity.SensorData">
+        select time,temperature from sensor_data
+        where plc_id = #{plcid}
+        order by time
+    </select>
+    <select id="getLight" resultType="cn.qqcn.entity.SensorData">
+        select time, light from sensor_data
+        where plc_id = #{plcid}
+        order by time
+    </select>
+    <select id="getAngle" resultType="cn.qqcn.entity.SensorData">
+        select time, angle from sensor_data
+        where plc_id = #{plcid}
+        order by time
+    </select>
+</mapper>

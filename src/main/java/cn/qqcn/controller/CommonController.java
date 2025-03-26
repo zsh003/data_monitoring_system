@@ -8,6 +8,7 @@ import com.wf.captcha.utils.CaptchaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -89,6 +90,21 @@ public class CommonController {
     @GetMapping("/plc")
     public String plc(){
         return "plc";
+    }
+
+    @GetMapping("/plc/{id}")
+    public String plcx(@PathVariable("id") Integer id){
+        return "plc/plc"+id;
+    }
+
+    @GetMapping("/light")
+    public String light(){
+        return "light";
+    }
+
+    @GetMapping("/angle")
+    public String angle(){
+        return "angle";
     }
 
     @GetMapping("/apply")

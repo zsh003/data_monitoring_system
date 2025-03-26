@@ -78,6 +78,7 @@ public class DataController {
     @GetMapping("/errorselect")
     @ResponseBody
     public ResultVO<Object> errorselect(DataQuery param){
+        System.out.println("dataquery:"+param);
         List<data> list = dataService.errorselect(param);
         Long count = dataService.counterrorList(param);
         return ResultVO.success(list,count);

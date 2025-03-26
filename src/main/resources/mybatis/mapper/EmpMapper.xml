@@ -10,18 +10,6 @@
         <result column="sex" property="sex"/>
         <result column="birth" property="birth"/>
         <result column="phone" property="phone"/>
-<!--        <id column="emp_id" property="empId" />-->
-<!--        <result column="name" property="name"/>-->
-<!--        <result column="sex" property="sex"/>-->
-<!--        <result column="sal" property="sal"/>-->
-<!--        <result column="age" property="age"/>-->
-<!--        <result column="birthday" property="birthday"/>-->
-<!--        <result column="address" property="address"/>-->
-<!--        <result column="dept_id" property="deptId"/>-->
-<!--        <association property="dept" column="dept_id" javaType="Dept">-->
-<!--            <id column="dept_id" property="deptName"/>-->
-<!--            <result column="dept_name" property="deptName"/>-->
-<!--        </association>-->
     </resultMap>
     
     <!-- 查询用户列表数据 -->

@@ -40,7 +40,11 @@
 
     <div class="layui-row layui-col-space15">
         <div class="layui-col-xs12 layui-col-md9">
-            <div id="echarts-records" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
+            <div id="echarts-records" style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
+            <div id="echarts-records2" style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
+            <div id="echarts-records3" style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
+            <div id="echarts-records4" style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
+
         </div>
     </div>
 
@@ -51,7 +55,70 @@
 <script th:src="@{/layui/layui.js}" charset="utf-8"></script>
 <script th:src="@{/js/lay-config.js?v=2.0.0}" charset="utf-8"></script>
 <script th:inline="javascript">
+    function loadLineChart(lineChart, id) {
+        // lineChart.showLoading();
+        var times = []; //x
+        var tems = []; //y
+        $.ajax({
+            type:"get",
+            url:"http://localhost:9981/sensordata/gettemp/"+id,
+            dataType:"json",
+            async:false,
+            success: function (result) {
+                for (var i = 0; i < result.length; i++){
+                    times.push(result[i].time);
+                    tems.push(result[i].temperature);
+                    if (result[i].temperature>50){
+                        layer.msg('数据发生异常,请去异常数据页面查看详情');
+                        var url=ctxPath + 'data/alert'
+                        $.post(url)}
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert(XMLHttpRequest.readyState);//当数据请求失败可以查看请求的状态
+            }
+        });
+        lineChart.hideLoading();
+        var option={
+            title: {
+                text: 'PLC-' + id,
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {
+                        show: true
+                    }
+                }
+            },
+            legend: {
+                data: ['温度']
+            },
+            tooltip:{},
+            //x轴
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: times,
+                axisLine:{
+                    onZero:false
+                }
+            },
+            //y轴没有显式设置，根据值自动生成y轴
+            yAxis: {
+                type: 'value'
+            },
+            //数据-data是最终要显示的数据
+            series: [{
+                name: '温度',
+                type: 'line',
+                data: tems
+            }]
+        };
+        lineChart.setOption(option);
+    };
     var ctxPath = [[@{/}]];
+
         layui.use(['layer', 'echarts'], function () {
             // var $ = layui.jquery,
             var layer = layui.layer,
@@ -60,70 +127,16 @@
              * 报表功能
              */
             var lineChart = echarts.init(document.getElementById('echarts-records'));
-            // lineChart.showLoading();
-            var times = []; //x
-            var tems = []; //y
-            $.ajax({
-                type:"post",
-                url:"http://localhost:9981/data/gettem",
-                dataType:"json",
-                async:false,
-                success: function (result) {
-                    for (var i = 0; i < result.length; i++){
-                        times.push(result[i].time);
-                        tems.push(result[i].tem);
-                        console.log(result)
-                        if (result[i].tem>200){
-                            layer.msg('数据发生异常,请去异常数据页面查看详情');
-                            var url=ctxPath + 'data/alert'
-                            $.post(url)}
-                    }
-                },
-                error: function (XMLHttpRequest, textStatus, errorThrown) {
-                    alert(XMLHttpRequest.readyState);//当数据请求失败可以查看请求的状态
-                }
-            });
-            lineChart.hideLoading();
-            var option={
-                title: {
-                    text: '折线图',
-                },
-                toolbox: {
-                    show: true,
-                    feature: {
-                        saveAsImage: {
-                            show: true
-                        }
-                    }
-                },
-                legend: {
-                    data: ['参数2']
-                },
-                tooltip:{},
-                //x轴
-                xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: times,
-                    axisLine:{
-                        onZero:false
-                    }
-                },
-                //y轴没有显式设置，根据值自动生成y轴
-                yAxis: {
-                    type: 'value'
-                },
-                //数据-data是最终要显示的数据
-                series: [{
-                    name: '温度',
-                    type: 'line',
-                    data: tems
-                }]
-            };
-            lineChart.setOption(option);
+            var lineChart2 = echarts.init(document.getElementById('echarts-records2'));
+            var lineChart3 = echarts.init(document.getElementById('echarts-records3'));
+            var lineChart4 = echarts.init(document.getElementById('echarts-records4'));
 
+            loadLineChart(lineChart, 1);
+            loadLineChart(lineChart2, 2);
+            loadLineChart(lineChart3, 3);
+            loadLineChart(lineChart4, 4);
             window.reloadView = function () {window.location.reload();}
-            setInterval('reloadView()',15000);
+            // setInterval('reloadView()',15000);
 
 
             // echarts 窗口缩放自适应
