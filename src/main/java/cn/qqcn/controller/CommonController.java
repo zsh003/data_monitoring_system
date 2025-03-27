@@ -7,6 +7,7 @@ import cn.qqcn.service.UserService;
 import com.wf.captcha.utils.CaptchaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -92,9 +93,15 @@ public class CommonController {
         return "plc";
     }
 
+    @GetMapping("/test")
+    public String testxxx(){
+        return "test";
+    }
+
     @GetMapping("/plc/{id}")
-    public String plcx(@PathVariable("id") Integer id){
-        return "plc/plc"+id;
+    public String plcx(@PathVariable("id") Integer id, Model model){
+        model.addAttribute("id", id); // 将id添加到模型中
+        return "plc/plcx"; // 返回视图名
     }
 
     @GetMapping("/light")

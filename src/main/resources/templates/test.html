@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Demo</title>
+    <!-- 请勿在项目正式环境中引用该 layui.css 地址 -->
+    <link href="//unpkg.com/layui@2.10.1/dist/css/layui.css" rel="stylesheet">
+</head>
+<body>
+<div class="layui-form">
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">年选择器</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="ID-laydate-type-year" placeholder="yyyy">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">年月选择器</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="ID-laydate-type-month" placeholder="yyyy-MM">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">时间选择器</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="ID-laydate-type-time" placeholder="HH:mm:ss">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label">日期时间选择器</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="ID-laydate-type-datetime" placeholder="yyyy-MM-dd HH:mm:ss">
+            </div>
+        </div>
+    </div>
+    <hr>
+    <h5 style="margin-bottom: 16px;">
+        同时显示日期和时间选择器（全面板） <sup>2.8+</sup> :
+    </h5>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">日期时间选择器</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="ID-laydate-type-datetime-1" placeholder="yyyy-MM-dd HH:mm:ss">
+            </div>
+        </div>
+    </div>
+
+    <div id="radar" style="width: 100px; height: 100px; border: 2px solid red">
+
+    </div>
+</div>
+
+<!-- 请勿在项目正式环境中引用该 layui.js 地址 -->
+<script src="//unpkg.com/layui@2.10.1/dist/layui.js"></script>
+<script src="/js/lay-module/echarts/echarts.js"></script>
+<script>
+
+    layui.use(function(){
+        var laydate = layui.laydate;
+        // 年选择器
+        laydate.render({
+            elem: '#ID-laydate-type-year',
+            type: 'year'
+        });
+
+        // 年月选择器
+        laydate.render({
+            elem: '#ID-laydate-type-month',
+            type: 'month'
+        });
+
+        // 时间选择器
+        laydate.render({
+            elem: '#ID-laydate-type-time',
+            type: 'time'
+        });
+
+        // 日期时间选择器
+        laydate.render({
+            elem: '#ID-laydate-type-datetime',
+            type: 'datetime'
+        });
+        // 日期时间选择器 - 日期和时间选择器同时显示（全面板）
+        laydate.render({
+            elem: '#ID-laydate-type-datetime-1',
+            type: 'datetime',
+            fullPanel: true // 2.8+
+        });
+        //雷达图
+        var radarChart = echarts.init(document.getElementById('radar'));
+        var option = {
+            title: {
+                text: 'PLC数据采集雷达图'
+            },
+            legend: {
+                data: ['PLC-1']
+            },
+            radar: {
+                indicator: [
+                    { name: '温度', max: 6500 },
+                    { name: '速度', max: 16000 },
+                    { name: '亮度', max: 30000 },
+                    { name: '角度', max: 38000 }
+                ]
+            },
+            series: [
+                {
+                    type: 'radar',
+                    data: [
+                        {
+                            value: [4200, 10000, 20000, 35000],
+                            name: 'PLC-1'
+                        }
+                    ]
+                }
+            ]
+        };
+
+        radarChart.setOption(option);
+    });
+</script>
+
+</body>
+</html>

@@ -3,6 +3,7 @@ package cn.qqcn.mapper;
 import cn.qqcn.common.vo.Page;
 import cn.qqcn.entity.SensorData;
 
+import java.util.Date;
 import java.util.List;
 
 public interface SensorDataMapper {
@@ -17,4 +18,6 @@ public interface SensorDataMapper {
     List<SensorData> getLight(int plcid);
 
     List<SensorData> getAngle(int plcid);
+
+    SensorData getDataByIdAndTime(int plcid, Date date);
 }

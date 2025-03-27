@@ -7,6 +7,7 @@ import cn.qqcn.service.SensorDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -42,5 +43,11 @@ public class SensorDataServiceImpl implements SensorDataService {
     @Override
     public List<SensorData> getAngle(int plcid) {
         return sensorDataMapper.getAngle(plcid);
+    }
+
+    @Override
+    public SensorData getDataByIdAndTime(int plcid, Date date) {
+
+        return sensorDataMapper.getDataByIdAndTime(plcid, date);
     }
 }

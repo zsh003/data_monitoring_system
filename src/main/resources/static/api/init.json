@@ -16,61 +16,11 @@
       "target": "_self",
       "child": [
         {
-          "title": "账号管理",
+          "title": "设备数据",
           "href": "",
           "icon": "fa fa-home",
           "target": "_self",
           "child": [
-            {
-              "title": "账号列表",
-              "href": "/emp",
-              "icon": "layui-icon layui-icon-user",
-              "target": "_self"
-            },
-            {
-              "title": "账号审核",
-              "href": "/applycheck",
-              "icon": "layui-icon layui-icon-user",
-              "target": "_self"
-            }
-          ]
-        },
-        {
-          "title": "数据统计",
-          "href": "",
-          "icon": "fa fa-file-text",
-          "target": "_self",
-          "child": [
-            {
-              "title": "PLC统计",
-              "href": "/plc",
-              "icon": "layui-icon layui-icon-component",
-              "target": "_self"
-            },
-            {
-              "title": "参数1图表",
-              "href": "/tem",
-              "icon": "layui-icon layui-icon-user",
-              "target": "_self"
-            },
-            {
-              "title": "参数2图表",
-              "href": "/speed",
-              "icon": "layui-icon layui-icon-user",
-              "target": "_self"
-            },
-            {
-              "title": "参数3图表",
-              "href": "/light",
-              "icon": "layui-icon layui-icon-user",
-              "target": "_self"
-            },
-            {
-              "title": "参数4图表",
-              "href": "/angle",
-              "icon": "layui-icon layui-icon-user",
-              "target": "_self"
-            },
             {
               "title": "PLC-1",
               "href": "/plc/1",
@@ -110,9 +60,75 @@
           ]
         },
         {
-          "title": "制动器状态",
-          "href": "/crane",
-          "icon": "fa fa-calendar",
+          "title": "分析统计",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "参数1图表",
+              "href": "/tem",
+              "icon": "layui-icon layui-icon-user",
+              "target": "_self"
+            },
+            {
+              "title": "参数2图表",
+              "href": "/speed",
+              "icon": "layui-icon layui-icon-user",
+              "target": "_self"
+            },
+            {
+              "title": "参数3图表",
+              "href": "/light",
+              "icon": "layui-icon layui-icon-user",
+              "target": "_self"
+            },
+            {
+              "title": "参数4图表",
+              "href": "/angle",
+              "icon": "layui-icon layui-icon-user",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "设备状态",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "PLC统计",
+              "href": "/plc",
+              "icon": "layui-icon layui-icon-component",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "账号管理",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "账号列表",
+              "href": "/emp",
+              "icon": "layui-icon layui-icon-user",
+              "target": "_self"
+            },
+            {
+              "title": "账号审核",
+              "href": "/applycheck",
+              "icon": "layui-icon layui-icon-user",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "test",
+          "href": "/test",
+          "icon": "fa fa-home",
           "target": "_self"
         }
       ]

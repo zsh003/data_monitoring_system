@@ -21,17 +21,34 @@
             border-radius: 5px;
             text-align: center;
         }
-        .top-panel > .layui-card-body{
+
+        .top-panel > .layui-card-body {
             height: 60px;
         }
-        .top-panel-number{
-            line-height:60px;
+
+        .top-panel-number {
+            line-height: 60px;
             font-size: 30px;
-            border-right:1px solid #eceff9;
+            border-right: 1px solid #eceff9;
         }
-        .top-panel-tips{
-            line-height:30px;
+
+        .top-panel-tips {
+            line-height: 30px;
             font-size: 12px
+        }
+        .top-zone {
+            display: flex;
+            flex-direction: row;
+            /*border: 1px solid red;*/
+            width: 100%;
+            height: 400px;
+            background-color: white;
+        }
+        #radar {
+            /*border: 1px solid red;*/
+            margin-left: 40px;
+            width: 700px;
+            height: 400px;
         }
     </style>
 </head>
@@ -39,39 +56,54 @@
 <div class="layuimini-main">
 
     <div class="layui-row layui-col-space15">
+        <div class="top-zone">
+            <div class="left">
+                <label class="layui-form-label">请选择时间</label>
+                <div class="layui-input-inline">
+                    <input type="text" class="layui-input" id="ID-laydate-type-datetime-1" placeholder="yyyy-MM-dd HH:mm:ss">
+                </div>
+            </div>
+            <div id="radar">
+            </div>
+        </div>
         <div class="layui-col-xs12 layui-col-md9">
-            <div id="echarts-records" style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
-            <div id="echarts-records2" style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
-            <div id="echarts-records3" style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
-            <div id="echarts-records4" style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
-
+            <div id="echarts-records"
+                 style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
+            <div id="echarts-records2"
+                 style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
+            <div id="echarts-records3"
+                 style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
+            <div id="echarts-records4"
+                 style="background-color:#ffffff;min-height:400px;padding: 10px; margin-bottom: 30px"></div>
         </div>
     </div>
-
 
 
 </div>
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}" charset="utf-8"></script>
 <script th:src="@{/layui/layui.js}" charset="utf-8"></script>
 <script th:src="@{/js/lay-config.js?v=2.0.0}" charset="utf-8"></script>
+<script src="/js/lay-module/echarts/echarts.js"></script>
+
 <script th:inline="javascript">
-    function loadTempChart(lineChart, id) {
+    function loadTempChart(lineChart, id, color) {
         var times = []; //x
         var data = []; //y
         var txt = "温度"
         $.ajax({
-            type:"get",
-            url:"http://localhost:9981/sensordata/gettemp/"+id,
-            dataType:"json",
-            async:false,
+            type: "get",
+            url: "http://localhost:9981/sensordata/gettemp/" + id,
+            dataType: "json",
+            async: false,
             success: function (result) {
-                for (var i = 0; i < result.length; i++){
+                for (var i = 0; i < result.length; i++) {
                     times.push(result[i].time);
                     data.push(result[i].temperature);
-                    if (result[i].temperature>50){
+                    if (result[i].temperature > 50) {
                         layer.msg('数据发生异常,请去异常数据页面查看详情');
-                        var url=ctxPath + 'data/alert'
-                        $.post(url)}
+                        var url = ctxPath + 'data/alert'
+                        $.post(url)
+                    }
                 }
             },
             error: function (XMLHttpRequest, textStatus, errorThrown) {
@@ -79,7 +111,7 @@
             }
         });
         lineChart.hideLoading();
-        var option={
+        var option = {
             title: {
                 text: txt,
             },
@@ -94,14 +126,14 @@
             legend: {
                 data: [txt]
             },
-            tooltip:{},
+            tooltip: {},
             //x轴
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
                 data: times,
-                axisLine:{
-                    onZero:false
+                axisLine: {
+                    onZero: false
                 }
             },
             //y轴没有显式设置，根据值自动生成y轴
@@ -116,25 +148,26 @@
                 itemStyle: {
                     normal: {
                         lineStyle: {
-                            color: 'red' // 折线颜色
+                            color: color // 折线颜色
                         }
-                    }
+                    },
                 }
             }]
         };
         lineChart.setOption(option);
     }
-    function loadSpeedChart(lineChart, id) {
+
+    function loadSpeedChart(lineChart, id, color) {
         var times = []; //x
         var data = []; //y
         var txt = "速度"
         $.ajax({
-            type:"get",
-            url:"http://localhost:9981/sensordata/getspeed/"+id,
-            dataType:"json",
-            async:false,
+            type: "get",
+            url: "http://localhost:9981/sensordata/getspeed/" + id,
+            dataType: "json",
+            async: false,
             success: function (result) {
-                for (var i = 0; i < result.length; i++){
+                for (var i = 0; i < result.length; i++) {
                     times.push(result[i].time);
                     data.push(result[i].speed);
                     // if (result[i].temperature>50){
@@ -148,7 +181,7 @@
             }
         });
         lineChart.hideLoading();
-        var option={
+        var option = {
             title: {
                 text: txt,
             },
@@ -163,14 +196,14 @@
             legend: {
                 data: [txt]
             },
-            tooltip:{},
+            tooltip: {},
             //x轴
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
                 data: times,
-                axisLine:{
-                    onZero:false
+                axisLine: {
+                    onZero: false
                 }
             },
             //y轴没有显式设置，根据值自动生成y轴
@@ -185,25 +218,26 @@
                 itemStyle: {
                     normal: {
                         lineStyle: {
-                            color: 'blue' // 折线颜色
+                            color: color // 折线颜色
                         }
-                    }
+                    },
                 }
             }]
         };
         lineChart.setOption(option);
     }
-    function loadLightChart(lineChart, id) {
+
+    function loadLightChart(lineChart, id, color) {
         var times = []; //x
         var data = []; //y
         var txt = "亮度"
         $.ajax({
-            type:"get",
-            url:"http://localhost:9981/sensordata/getlight/"+id,
-            dataType:"json",
-            async:false,
+            type: "get",
+            url: "http://localhost:9981/sensordata/getlight/" + id,
+            dataType: "json",
+            async: false,
             success: function (result) {
-                for (var i = 0; i < result.length; i++){
+                for (var i = 0; i < result.length; i++) {
                     times.push(result[i].time);
                     data.push(result[i].light);
                     // if (result[i].temperature>50){
@@ -217,7 +251,7 @@
             }
         });
         lineChart.hideLoading();
-        var option={
+        var option = {
             title: {
                 text: txt,
             },
@@ -232,14 +266,14 @@
             legend: {
                 data: [txt]
             },
-            tooltip:{},
+            tooltip: {},
             //x轴
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
                 data: times,
-                axisLine:{
-                    onZero:false
+                axisLine: {
+                    onZero: false
                 }
             },
             //y轴没有显式设置，根据值自动生成y轴
@@ -254,25 +288,26 @@
                 itemStyle: {
                     normal: {
                         lineStyle: {
-                            color: 'purple' // 折线颜色
+                            color: color // 折线颜色
                         }
-                    }
+                    },
                 }
             }]
         };
         lineChart.setOption(option);
     }
-    function loadAngleChart(lineChart, id) {
+
+    function loadAngleChart(lineChart, id, color) {
         var times = []; //x
         var data = []; //y
         var txt = "角度"
         $.ajax({
-            type:"get",
-            url:"http://localhost:9981/sensordata/getangle/"+id,
-            dataType:"json",
-            async:false,
+            type: "get",
+            url: "http://localhost:9981/sensordata/getangle/" + id,
+            dataType: "json",
+            async: false,
             success: function (result) {
-                for (var i = 0; i < result.length; i++){
+                for (var i = 0; i < result.length; i++) {
                     times.push(result[i].time);
                     data.push(result[i].angle);
                     // if (result[i].temperature>50){
@@ -286,7 +321,7 @@
             }
         });
         lineChart.hideLoading();
-        var option={
+        var option = {
             title: {
                 text: txt,
             },
@@ -301,14 +336,14 @@
             legend: {
                 data: [txt]
             },
-            tooltip:{},
+            tooltip: {},
             //x轴
             xAxis: {
                 type: 'category',
                 boundaryGap: false,
                 data: times,
-                axisLine:{
-                    onZero:false
+                axisLine: {
+                    onZero: false
                 }
             },
             //y轴没有显式设置，根据值自动生成y轴
@@ -323,20 +358,26 @@
                 itemStyle: {
                     normal: {
                         lineStyle: {
-                            color: 'green' // 折线颜色
+                            color: color // 折线颜色
                         }
-                    }
+                    },
                 }
             }]
         };
         lineChart.setOption(option);
     }
+
+    // function selectDataById(id, data) {
+    //     $.ajax({
+    //         url:
+    //     })
+    // }
     var ctxPath = [[@{/}]];
 
-        layui.use(['layer', 'echarts'], function () {
+        layui.use(['layer'], function () {
             // var $ = layui.jquery,
-            var layer = layui.layer,
-                echarts = layui.echarts;
+            var laydate = layui.laydate;
+            var layer = layui.layer;
             /**
              * 报表功能
              */
@@ -345,21 +386,94 @@
             var lineChart3 = echarts.init(document.getElementById('echarts-records3'));
             var lineChart4 = echarts.init(document.getElementById('echarts-records4'));
 
-            var plcid = 4;
-            loadTempChart(lineChart, plcid);
-            loadSpeedChart(lineChart2, plcid);
-            loadLightChart(lineChart3, plcid);
-            loadAngleChart(lineChart4, plcid);
-            window.reloadView = function () {window.location.reload();}
+            var plcid = [[${id}]];
+            loadTempChart(lineChart, plcid, 'red');
+            loadSpeedChart(lineChart2, plcid, 'green');
+            loadLightChart(lineChart3, plcid, 'purple');
+            loadAngleChart(lineChart4, plcid, 'blue');
+
+
+            //雷达图
+            var radarChart = echarts.init(document.getElementById('radar'));
+            var arr = [];
+            var txt = 'PLC-'+plcid
+            var option = {
+                label:{show:true},
+                title: {
+                    text: 'PLC数据采集雷达图'
+                },
+                legend: {
+                    data: [txt]
+                },
+                radar: {
+                    indicator: [
+                        { name: '温度', max: 25 },
+                        { name: '速度', max: 25 },
+                        { name: '亮度', max: 100 },
+                        { name: '角度', max: 360 }
+                    ]
+                },
+                series: [
+                    {
+                        type: 'radar',
+                        data: [
+                            {
+                                value: arr,
+                                name: txt
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            radarChart.setOption(option);
+
+
+
+            window.reloadView = function () {
+                window.location.reload();
+            }
             // setInterval('reloadView()',15000);
-
-
             // echarts 窗口缩放自适应
             window.onresize = function () {
                 lineChart.resize();
             }
 
-        });
+            // 日期时间选择器 - 日期和时间选择器同时显示（全面板）
+            laydate.render({
+                elem: '#ID-laydate-type-datetime-1',
+                type: 'datetime',
+                done: function(value, date){
+                    const isoString = `${date.year}-${String(date.month).padStart(2, '0')}-${String(date.date).padStart(2, '0')}T${String(date.hours).padStart(2, '0')}:${String(date.minutes).padStart(2, '0')}:${String(date.seconds).padStart(2, '0')}`;
+                    // 使用 AJAX 发送请求
+                    $.ajax({
+                        url: `http://localhost:9981/sensordata/getdatabytime/${plcid}`, // 替换成你的Spring Boot接口地址
+                        type: 'POST',
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            dateTime: isoString // 将ISO 8601日期字符串作为参数
+                        }),
+                        success: function(response) {
+                            if (response.code !== 0) {
+                                layer.msg("未找到数据")
+                            } else {
+                                arr.push(response.data.temperature)
+                                arr.push(response.data.speed)
+                                arr.push(response.data.light)
+                                arr.push(response.data.angle)
+                                option.series[0].data[0].value = arr; // 更新 series 中的数据
+                                console.log(arr);
+                                radarChart.setOption(option); // 使用更新后的 option 设置选项
+                                arr = []; // 清空数组
+                            }
+                        },
+                        error: function(error) {
+                            console.log('Error:', error);
+                        }
+                    });
+                }
+            });
+        })
 </script>
 </body>
 </html>

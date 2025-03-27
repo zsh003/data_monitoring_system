@@ -5,9 +5,14 @@ import cn.qqcn.entity.SensorData;
 import cn.qqcn.entity.vo.ResultVO;
 import cn.qqcn.service.SensorDataService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
+import java.util.Date;
 
 @RequestMapping("/sensordata")
 @RestController
@@ -42,5 +47,18 @@ public class SensorDataController {
     @GetMapping("/getangle/{plcid}")
     public List<SensorData> getAngle(@PathVariable int plcid){
         return sensorDataService.getAngle(plcid);
+    }
+
+    @PostMapping("/getdatabytime/{plcid}")
+    public ResultVO<Object> handleRequest(@PathVariable int plcid, @RequestBody Map<String, String> payload) {
+        String dateTimeStr = payload.get("dateTime");
+
+        // 解析ISO 8601格式的日期时间字符串
+        LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr);
+
+        System.out.println("Received date-time: " + dateTime);
+        Date date = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+        SensorData sensorData =  sensorDataService.getDataByIdAndTime(plcid, date);
+        return sensorData != null ? ResultVO.success(sensorData, 1L) : ResultVO.fail("No data found for the given date-time.");
     }
 }

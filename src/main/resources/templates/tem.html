@@ -54,6 +54,8 @@
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}" charset="utf-8"></script>
 <script th:src="@{/layui/layui.js}" charset="utf-8"></script>
 <script th:src="@{/js/lay-config.js?v=2.0.0}" charset="utf-8"></script>
+<script src="/js/lay-module/echarts/echarts.js"></script>
+
 <script th:inline="javascript">
     function loadLineChart(lineChart, id) {
         // lineChart.showLoading();
@@ -119,10 +121,9 @@
     };
     var ctxPath = [[@{/}]];
 
-        layui.use(['layer', 'echarts'], function () {
+        layui.use(['layer'], function () {
             // var $ = layui.jquery,
-            var layer = layui.layer,
-                echarts = layui.echarts;
+            var layer = layui.layer;
             /**
              * 报表功能
              */
