@@ -55,4 +55,46 @@
         select count(1) from sensor_data
         where plc_id = #{id}
     </select>
+    <select id="listerror" resultType="cn.qqcn.entity.SensorData">
+        SELECT * FROM sensor_data
+         <where>
+             <if test="params['plcId'] != null">
+                 plc_id = #{params.plcId}
+             </if>
+            <if test="params['speedMax'] != null or params['speedMin'] != null or params['tempMax'] != null or params['tempMin'] != null or params['lightMax'] != null or params['lightMin'] != null or params['angleMax'] != null or params['angleMin'] != null">
+                AND (
+                <if test="params['speedMax'] != null">speed &gt; #{params.speedMax}</if>
+                <if test="params['speedMin'] != null"><if test="params['speedMax'] != null"> OR </if>speed &lt; #{params.speedMin}</if>
+                <if test="params['tempMax'] != null"><if test="params['speedMax'] != null or params['speedMin'] != null"> OR </if>temperature &gt; #{params.tempMax}</if>
+                <if test="params['tempMin'] != null"><if test="params['speedMax'] != null or params['speedMin'] != null or params['tempMax'] != null"> OR </if>temperature &lt; #{params.tempMin}</if>
+                <if test="params['lightMax'] != null"><if test="params['speedMax'] != null or params['speedMin'] != null or params['tempMax'] != null or params['tempMin'] != null"> OR </if>light &gt; #{params.lightMax}</if>
+                <if test="params['lightMin'] != null"><if test="params['speedMax'] != null or params['speedMin'] != null or params['tempMax'] != null or params['tempMin'] != null or params['lightMax'] != null"> OR </if>light &lt; #{params.lightMin}</if>
+                <if test="params['angleMax'] != null"><if test="params['speedMax'] != null or params['speedMin'] != null or params['tempMax'] != null or params['tempMin'] != null or params['lightMax'] != null or params['lightMin'] != null"> OR </if>angle &gt; #{params.angleMax}</if>
+                <if test="params['angleMin'] != null"><if test="params['speedMax'] != null or params['speedMin'] != null or params['tempMax'] != null or params['tempMin'] != null or params['lightMax'] != null or params['lightMin'] != null or params['angleMax'] != null"> OR </if>angle &lt; #{params.angleMin}</if>
+                )
+            </if>
+         </where>
+        limit #{page.start},#{page.limit}
+
+    </select>
+    <select id="countErrorDataList" resultType="java.lang.Long">
+        SELECT count(1) FROM sensor_data
+        <where>
+            <if test="params['plcId'] != null">
+                plc_id = #{params.plcId}
+            </if>
+            <if test="params['speedMax'] != null or params['speedMin'] != null or params['tempMax'] != null or params['tempMin'] != null or params['lightMax'] != null or params['lightMin'] != null or params['angleMax'] != null or params['angleMin'] != null">
+                AND (
+                <if test="params['speedMax'] != null">speed &gt; #{params.speedMax}</if>
+                <if test="params['speedMin'] != null"><if test="params['speedMax'] != null"> OR </if>speed &lt; #{params.speedMin}</if>
+                <if test="params['tempMax'] != null"><if test="params['speedMax'] != null or params['speedMin'] != null"> OR </if>temperature &gt; #{params.tempMax}</if>
+                <if test="params['tempMin'] != null"><if test="params['speedMax'] != null or params['speedMin'] != null or params['tempMax'] != null"> OR </if>temperature &lt; #{params.tempMin}</if>
+                <if test="params['lightMax'] != null"><if test="params['speedMax'] != null or params['speedMin'] != null or params['tempMax'] != null or params['tempMin'] != null"> OR </if>light &gt; #{params.lightMax}</if>
+                <if test="params['lightMin'] != null"><if test="params['speedMax'] != null or params['speedMin'] != null or params['tempMax'] != null or params['tempMin'] != null or params['lightMax'] != null"> OR </if>light &lt; #{params.lightMin}</if>
+                <if test="params['angleMax'] != null"><if test="params['speedMax'] != null or params['speedMin'] != null or params['tempMax'] != null or params['tempMin'] != null or params['lightMax'] != null or params['lightMin'] != null"> OR </if>angle &gt; #{params.angleMax}</if>
+                <if test="params['angleMin'] != null"><if test="params['speedMax'] != null or params['speedMin'] != null or params['tempMax'] != null or params['tempMin'] != null or params['lightMax'] != null or params['lightMin'] != null or params['angleMax'] != null"> OR </if>angle &lt; #{params.angleMin}</if>
+                )
+            </if>
+        </where>
+    </select>
 </mapper>

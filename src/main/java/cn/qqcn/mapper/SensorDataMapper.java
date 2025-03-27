@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface SensorDataMapper {
     List<SensorData> list(Page page);
@@ -22,8 +23,11 @@ public interface SensorDataMapper {
 
     SensorData getDataByIdAndTime(int plcid, Date date);
 
-    List<SensorData> listById(@Param("page")Page page, int id);
+    List<SensorData> listById(@Param("page") Page page, int id);
 
     Long countDataListById(int id);
 
+    List<SensorData> listerror(@Param("page") Page page, @Param("params") Map<String, Object> params);
+
+    Long countErrorDataList(@Param("params") Map<String, Object> params);
 }

@@ -22,23 +22,85 @@
     </style>
 </head>
 <body>
-<div class="div-content">
 
-    <table id="datalist" lay-filter="table-data-filter"></table>
-    <script type="text/html" id="table-data-toolbar">
-        <div class="layui-btn-container">
-            <button class="layui-btn layui-btn-sm" lay-event="alert">报警</button>
-        </div>
-    </script>
+<div class="div-content">
+    <form class="layui-form layui-form-pane" id="form-search">
+        <fieldset class="table-search-fieldset">
+            <legend>筛选条件</legend>
+            <!-- PLC ID -->
+            <div class="layui-form-item">
+                <label class="layui-form-label">PLC ID</label>
+                <div class="layui-input-block">
+                    <input type="text" name="plcId" placeholder="请输入PLC ID" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <!-- 参数1和参数2范围在同一行 -->
+            <div class="layui-form-item layui-inline">
+                <div class="layui-inline">
+                    <label class="layui-form-label">参数1范围</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="tempMin" placeholder="最小值" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="number" name="tempMax" placeholder="最大值" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">参数2范围</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="speedMin" placeholder="最小值" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="number" name="speedMax" placeholder="最大值" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 参数3和参数4范围在同一行 -->
+            <div class="layui-form-item layui-inline">
+                <div class="layui-inline">
+                    <label class="layui-form-label">参数3范围</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="lightMin" placeholder="最小值" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="number" name="lightMax" placeholder="最大值" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">参数4范围</label>
+                    <div class="layui-input-inline">
+                        <input type="number" name="angleMin" placeholder="最小值" autocomplete="off" class="layui-input">
+                    </div>
+                    <div class="layui-input-inline">
+                        <input type="number" name="angleMax" placeholder="最大值" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 按钮组 -->
+            <div class="layui-form-item">
+                <button class="layui-btn" lay-submit lay-filter="search">搜索</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </fieldset>
+    </form>
+
+    <table id="datalist" ></table>
 
 </div>
+<!-- 定义操作列模板 -->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}" charset="utf-8"></script>
 <script th:src="@{/layui/layui.js}" charset="utf-8"></script>
 <script th:inline="javascript">
 
     function refreshTable(){
-        $("#btn-reset").click();
-        $("#btn-search").click();
+        // $("#btn-reset").click();
+        // $("#btn-search").click();
     }
 
     var ctxPath = [[@{/}]];
@@ -46,40 +108,70 @@
             var laydate = layui.laydate;
             var table = layui.table;
             var form = layui.form;
-
-            table.on('toolbar(table-data-filter)', function(obj){
-            if(obj.event == 'alert'){
-                var url=ctxPath + 'data/alertfiles'
-                $.post(url,function (response){
-                    console.log(response)
-                    if(response.code == 0){
-                        layer.msg('发送成功', {icon: 6, time:1000},);
-                    }else{
-                        layer.msg(response.message,{icon: 5,anim: 6});
-                    }
-                });
-            }
-            });
             table.render({
                 elem: '#datalist'
-                ,url:  ctxPath + 'data/errorselect' //数据接口
+                ,url:  ctxPath + 'sensordata/list/error' //数据接口
+                ,method: "post"
                 ,toolbar: "#table-data-toolbar"
                 ,page: true //开启分页
                 ,limits: [5,10,30,50,100]
                 ,cols: [
                     [
                         {type: "checkbox",width:60},
-                        {field: 'num', title: '编号', width:120, sort: true,align: 'center'}
+                        {field: 'plcId', title: '编号', width:120, sort: true,align: 'center'}
                         ,{field: 'time', title: '产生时间', width:200, sort: true,align: 'center'}
-                        ,{field: 'speed', title: '参数1', width:120, sort: true ,align: 'center'}
-                        ,{field: 'tem', title: '参数2', width:120 , sort: true,align: 'center'}
-                        ,{field: 'yingli', title: '参数3', width: 120 , sort: true,align: 'center'}
-                        ,{field: 'dir_x', title: '参数4', width: 120 , sort: true,align: 'center'}
-                        ,{field: 'dir_y', title: '参数5', width: 120 , sort: true,align: 'center'}
+                        ,{field: 'temperature', title: '参数1', width:120, sort: true ,align: 'center'}
+                        ,{field: 'speed', title: '参数2', width:120 , sort: true,align: 'center'}
+                        ,{field: 'light', title: '参数3', width: 120 , sort: true,align: 'center'}
+                        ,{field: 'angle', title: '参数4', width: 120 , sort: true,align: 'center'}
+                        ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:100, align:'center'} // 使用模板定义的操作列
                     ]
                 ]
+                ,done: function(res, curr, count){
+                    console.log("表格渲染完成");
+                }
             });
-        });
+            // 监听工具条
+            table.on('tool(datalist)', function(obj){
+                console.log("Tool event triggered"); // 调试信息
+                var data = obj.data; // 获得当前行数据
+                var layEvent = obj.event; // 获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+
+                if(layEvent === 'del'){ // 删除操作
+                    console.log("Delete button clicked for ID: " + data.plcId); // 调试信息
+                    layer.confirm('真的删除此行数据吗？', function(index){
+                        // 发送请求到服务器端删除数据
+                        $.ajax({
+                            url: ctxPath + 'sensordata/delete', // 假设这是您的删除接口
+                            type: 'POST',
+                            data: {id: data.plcId}, // 假设 plcId 是主键
+                            success: function(result){
+                                if(result.code == 200){ // 假设返回的成功码是200
+                                    obj.del(); // 删除对应行（tr）的DOM结构
+                                    layer.close(index);
+                                    layer.msg("删除成功");
+                                }else{
+                                    layer.msg("删除失败");
+                                }
+                            },
+                            error: function(e){
+                                console.log(e.status);
+                                console.log(e.responseText);
+                                layer.msg("网络错误");
+                            }
+                        });
+                    });
+                }
+            });
+
+            form.on('submit(search)', function(data){
+                console.log(data)
+                table.reload('datalist', {
+                    where: data.field //向服务器发送的请求参数
+                });
+                return false; //阻止表单跳转。如果需要跳转，则去掉这行。
+            });
+        })
 </script>
 </body>
 </html>

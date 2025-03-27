@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Date;
@@ -25,6 +26,37 @@ public class SensorDataController {
         Page page1 = new Page(page, limit);
         List<SensorData> list = sensorDataService.list(page1);
         Long count = sensorDataService.countDataList();
+        return ResultVO.success(list, count);
+    }
+
+    @PostMapping("/list/error")
+    public ResultVO<Object> listerror(@RequestParam int page, @RequestParam int limit,
+                                      @RequestParam(required = false) Integer plcId,
+                                      @RequestParam(required = false) Double angleMax,
+                                      @RequestParam(required = false) Double angleMin,
+                                      @RequestParam(required = false) Double lightMax,
+                                      @RequestParam(required = false) Double lightMin,
+                                      @RequestParam(required = false) Double speedMax,
+                                      @RequestParam(required = false) Double speedMin,
+                                      @RequestParam(required = false) Double tempMax,
+                                      @RequestParam(required = false) Double tempMin
+                                      ){
+        Page page1 = new Page(page, limit);
+        Map<String, Object> params = new HashMap<>();
+        params.put("plcId", plcId);
+        params.put("angleMax", angleMax);
+        params.put("angleMin", angleMin);
+        params.put("lightMax", lightMax);
+        params.put("lightMin", lightMin);
+        params.put("speedMax", speedMax);
+        params.put("speedMin", speedMin);
+        params.put("tempMax", tempMax);
+        params.put("tempMin", tempMin);
+        System.out.println("page" + page1);
+        System.out.println("params" + params);
+        List<SensorData> list = sensorDataService.listerror(page1, params);
+        System.out.println("list:"+list);
+        Long count = sensorDataService.countErrorDataList(params);
         return ResultVO.success(list, count);
     }
 

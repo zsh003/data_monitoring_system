@@ -5,6 +5,7 @@ import cn.qqcn.entity.SensorData;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface SensorDataService {
     List<SensorData> list(Page page1);
@@ -24,4 +25,8 @@ public interface SensorDataService {
     List<SensorData> list(Page page1, int id);
 
     Long countDataList(int id);
+
+    List<SensorData> listerror(Page page1, Map<String, Object> params);
+
+    Long countErrorDataList(Map<String, Object> params);
 }

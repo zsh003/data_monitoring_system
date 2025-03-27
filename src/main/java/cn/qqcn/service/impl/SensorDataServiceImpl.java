@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SensorDataServiceImpl implements SensorDataService {
@@ -59,6 +60,17 @@ public class SensorDataServiceImpl implements SensorDataService {
     @Override
     public Long countDataList(int id) {
         return sensorDataMapper.countDataListById(id);
+    }
+
+    @Override
+    public List<SensorData> listerror(Page page, Map<String, Object> params) {
+        return sensorDataMapper.listerror(page, params);
+    }
+
+    @Override
+    public Long countErrorDataList(Map<String, Object> params) {
+        return sensorDataMapper.countErrorDataList(params);
+
     }
 
 }
