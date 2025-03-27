@@ -92,6 +92,38 @@
           ]
         },
         {
+          "title": "数据导出",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "PLC-1",
+              "href": "/export/1",
+              "icon": "layui-icon layui-icon-component",
+              "target": "_self"
+            },
+            {
+              "title": "PLC-2",
+              "href": "/export/2",
+              "icon": "layui-icon layui-icon-component",
+              "target": "_self"
+            },
+            {
+              "title": "PLC-3",
+              "href": "/export/3",
+              "icon": "layui-icon layui-icon-component",
+              "target": "_self"
+            },
+            {
+              "title": "PLC-4",
+              "href": "/export/4",
+              "icon": "layui-icon layui-icon-component",
+              "target": "_self"
+            }
+          ]
+        },
+        {
           "title": "设备状态",
           "href": "",
           "icon": "fa fa-home",

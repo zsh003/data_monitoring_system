@@ -28,6 +28,14 @@ public class SensorDataController {
         return ResultVO.success(list, count);
     }
 
+    @GetMapping("/list/{id}")
+    public ResultVO<Object> list(@RequestParam int page, @RequestParam int limit, @PathVariable int id){
+        Page page1 = new Page(page, limit);
+        List<SensorData> list = sensorDataService.list(page1, id);
+        Long count = sensorDataService.countDataList(id);
+        return ResultVO.success(list, count);
+    }
+
     @GetMapping("/getspeed/{plcid}")
     public List<SensorData> getSpeed(@PathVariable int plcid){
         return sensorDataService.getSpeed(plcid);

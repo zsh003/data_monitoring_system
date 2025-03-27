@@ -50,4 +50,15 @@ public class SensorDataServiceImpl implements SensorDataService {
 
         return sensorDataMapper.getDataByIdAndTime(plcid, date);
     }
+
+    @Override
+    public List<SensorData> list(Page page, int id) {
+        return sensorDataMapper.listById(page, id);
+    }
+
+    @Override
+    public Long countDataList(int id) {
+        return sensorDataMapper.countDataListById(id);
+    }
+
 }

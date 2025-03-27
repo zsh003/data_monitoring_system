@@ -20,4 +20,8 @@ public interface SensorDataService {
     List<SensorData> getAngle(int plcid);
 
     SensorData getDataByIdAndTime(int plcid, Date date);
+
+    List<SensorData> list(Page page1, int id);
+
+    Long countDataList(int id);
 }

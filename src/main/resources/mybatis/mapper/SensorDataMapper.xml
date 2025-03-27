@@ -44,4 +44,15 @@
         where plc_id = #{plcid}
         and time = #{date}
     </select>
+    <select id="listById" resultType="cn.qqcn.entity.SensorData">
+        select * from sensor_data
+        where plc_id = #{id}
+        order by time
+        limit #{page.start},#{page.limit}
+
+    </select>
+    <select id="countDataListById" resultType="java.lang.Long">
+        select count(1) from sensor_data
+        where plc_id = #{id}
+    </select>
 </mapper>

@@ -104,6 +104,12 @@ public class CommonController {
         return "plc/plcx"; // 返回视图名
     }
 
+    @GetMapping("/export/{id}")
+    public String exportx(@PathVariable("id") Integer id, Model model) {
+        model.addAttribute("id", id);
+        return "export/exportx";
+    }
+
     @GetMapping("/light")
     public String light(){
         return "light";
