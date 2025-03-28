@@ -21,9 +21,9 @@ public interface SensorDataMapper {
 
     List<SensorData> getAngle(int plcid);
 
-    SensorData getDataByIdAndTime(int plcid, Date date);
+    SensorData getDataByIdAndTime(@Param("plcid") int plcid, @Param("date") Date date);
 
-    List<SensorData> listById(@Param("page") Page page, int id);
+    List<SensorData> listById(@Param("page") Page page,@Param("id") int id);
 
     Long countDataListById(int id);
 

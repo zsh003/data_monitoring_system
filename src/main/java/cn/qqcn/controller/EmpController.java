@@ -31,10 +31,10 @@ public class  EmpController {
 
     @GetMapping("/list")
     @ResponseBody
-    public ResultVO<Object> getEmpList(EmpQuery param){
+    public ResultVO<Object> getEmpList(EmpQuery param) {
         List<Emp> list = empService.getEmpList(param);
         Long count = empService.countEmpList(param);
-        return ResultVO.success(list,count);
+        return ResultVO.success(list, count);
     }
 
     @PostMapping("")

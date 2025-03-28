@@ -8,6 +8,7 @@ import cn.qqcn.entity.vo.ResultVO;
 import cn.qqcn.entity.apply;
 import cn.qqcn.service.UserService;
 import cn.qqcn.entity.vo.ApplyVO;
+import com.wf.captcha.utils.CaptchaUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +26,9 @@ public class UserController {
     @PostMapping("/login")
     public ResultVO login(User param, @RequestParam("captcha") String captcha, HttpServletRequest request, HttpSession session){
         //暂时忽略验证码
-//        if (!CaptchaUtil.ver(captcha, request)) {
-//            return Result.fail("验证码错误！");
-//        }
+        if (!CaptchaUtil.ver(captcha, request)) {
+            return ResultVO.fail("验证码错误！");
+        }
         User user = userService.login(param);
         System.out.print(user.getPwd());
         String kind= user.getKind();

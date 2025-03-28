@@ -3,11 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.qqcn.mapper.UserMapper">
-    <resultMap id="applyMap" type="apply">
+    <resultMap id="applyMap" type="cn.qqcn.entity.apply">
         <id column="sno" property="sno" />
         <result column="name" property="name"/>
     </resultMap>
-    <select id="getUser" parameterType="User" resultType="User">
+    <select id="getUser" parameterType="cn.qqcn.entity.User" resultType="cn.qqcn.entity.User">
         select * from user where sno=#{sno} and pwd=#{pwd}
     </select>
     <update id="updatePwdById" parameterType="pwd">
@@ -22,7 +22,7 @@
         where sno=#{sno}
     </update>
     <select id="getapplyList" parameterType="cn.qqcn.entity.vo.ApplyVO" resultMap="applyMap">
-        select sno,name from user where kind='待审核'
+        select sno,sname from user where kind='待审核'
     </select>
 
     <select id="countapplyList" parameterType="cn.qqcn.entity.vo.ApplyVO" resultType="Long">
