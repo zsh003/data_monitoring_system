@@ -73,4 +73,9 @@ public class SensorDataServiceImpl implements SensorDataService {
 
     }
 
+    @Override
+    public void deleteByTime(int plcid, Date date) {
+        sensorDataMapper.deleteByTime(plcid, date);
+    }
+
 }

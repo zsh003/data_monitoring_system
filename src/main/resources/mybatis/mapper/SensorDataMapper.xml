@@ -5,12 +5,17 @@
 <mapper namespace="cn.qqcn.mapper.SensorDataMapper">
     <resultMap id="dataMap" type="SensorData">
         <id column="plc_id" property="plcId" />
-        <result column="time" property="time"/>
+        <result column="time" property="time" javaType="java.util.Date"/>
         <result column="speed" property="speed"/>
         <result column="temperature" property="temperature"/>
         <result column="light" property="light"/>
         <result column="angle" property="angle"/>
     </resultMap>
+    <delete id="deleteByTime">
+        delete from sensor_data
+        where plc_id = #{plcid}
+        and time = #{date}
+    </delete>
 
     <select id="list" resultType="cn.qqcn.entity.SensorData" resultMap="dataMap">
         select * from sensor_data

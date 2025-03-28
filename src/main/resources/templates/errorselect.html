@@ -87,12 +87,12 @@
         </fieldset>
     </form>
 
-    <table id="datalist" ></table>
+    <table id="datalist" lay-filter="datalist"></table>
 
 </div>
 <!-- 定义操作列模板 -->
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" lay-filter="del">删除</a>
 </script>
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}" charset="utf-8"></script>
 <script th:src="@{/layui/layui.js}" charset="utf-8"></script>
@@ -119,7 +119,17 @@
                     [
                         {type: "checkbox",width:60},
                         {field: 'plcId', title: '编号', width:120, sort: true,align: 'center'}
-                        ,{field: 'time', title: '产生时间', width:200, sort: true,align: 'center'}
+                        ,{field: 'time', title: '产生时间', width:200, sort: true,align: 'center',
+                        templet: function(d){
+                            var date = new Date(d.time);
+                            var y = date.getFullYear();
+                            var m = date.getMonth() + 1;
+                            var d = date.getDate();
+                            var h = date.getHours();
+                            var min = date.getMinutes();
+                            var sec = date.getSeconds();
+                            return y + "-" + (m < 10 ? ('0' + m) : m) + "-" + (d < 10 ? ('0' + d) : d) + " " + (h < 10 ? ('0' + h) : h) + ":" + (min < 10 ? ('0' + min) : min) + ":" + (sec < 10 ? ('0' + sec) : sec);
+                        }}
                         ,{field: 'temperature', title: '参数1', width:120, sort: true ,align: 'center'}
                         ,{field: 'speed', title: '参数2', width:120 , sort: true,align: 'center'}
                         ,{field: 'light', title: '参数3', width: 120 , sort: true,align: 'center'}
@@ -133,20 +143,22 @@
             });
             // 监听工具条
             table.on('tool(datalist)', function(obj){
-                console.log("Tool event triggered"); // 调试信息
                 var data = obj.data; // 获得当前行数据
                 var layEvent = obj.event; // 获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
-
+                console.log(data)
                 if(layEvent === 'del'){ // 删除操作
                     console.log("Delete button clicked for ID: " + data.plcId); // 调试信息
                     layer.confirm('真的删除此行数据吗？', function(index){
                         // 发送请求到服务器端删除数据
                         $.ajax({
-                            url: ctxPath + 'sensordata/delete', // 假设这是您的删除接口
+                            url: 'http://localhost:9981/sensordata/deletebytime/' + data.plcId, // 假设这是您的删除接口
                             type: 'POST',
-                            data: {id: data.plcId}, // 假设 plcId 是主键
+                            contentType: "application/json",
+                            data: JSON.stringify({dateTime: data.time}), // 假设 plcId 是主键
                             success: function(result){
-                                if(result.code == 200){ // 假设返回的成功码是200
+
+                                console.log(result);
+                                if(result.code == 0){ // 假设返回的成功码是200
                                     obj.del(); // 删除对应行（tr）的DOM结构
                                     layer.close(index);
                                     layer.msg("删除成功");

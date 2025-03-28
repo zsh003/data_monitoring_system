@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.HashMap;
@@ -100,5 +102,16 @@ public class SensorDataController {
         Date date = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
         SensorData sensorData =  sensorDataService.getDataByIdAndTime(plcid, date);
         return sensorData != null ? ResultVO.success(sensorData, 1L) : ResultVO.fail("No data found for the given date-time.");
+    }
+
+    @PostMapping("/deletebytime/{plcid}")
+    public ResultVO<Object> deleteByTime(@PathVariable int plcid, @RequestBody Map<String, String> payload) throws ParseException {
+        String dateTimeStr = payload.get("dateTime");
+        System.out.println("plcid" + plcid);
+        System.out.println("Received date-time: " + dateTimeStr);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date2 = formatter.parse(dateTimeStr);
+        sensorDataService.deleteByTime(plcid, date2);
+        return ResultVO.success();
     }
 }

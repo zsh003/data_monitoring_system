@@ -29,4 +29,6 @@ public interface SensorDataService {
     List<SensorData> listerror(Page page1, Map<String, Object> params);
 
     Long countErrorDataList(Map<String, Object> params);
+
+    void deleteByTime(int plcid, Date date);
 }

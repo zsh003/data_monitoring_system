@@ -30,4 +30,6 @@ public interface SensorDataMapper {
     List<SensorData> listerror(@Param("page") Page page, @Param("params") Map<String, Object> params);
 
     Long countErrorDataList(@Param("params") Map<String, Object> params);
+
+    void deleteByTime(int plcid, Date date);
 }
