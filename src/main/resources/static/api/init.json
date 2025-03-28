@@ -16,6 +16,20 @@
       "target": "_self",
       "child": [
         {
+          "title": "设备状态",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "PLC统计",
+              "href": "/plc",
+              "icon": "layui-icon layui-icon-component",
+              "target": "_self"
+            }
+          ]
+        },
+        {
           "title": "设备数据",
           "href": "",
           "icon": "fa fa-home",
@@ -124,20 +138,6 @@
           ]
         },
         {
-          "title": "设备状态",
-          "href": "",
-          "icon": "fa fa-home",
-          "target": "_self",
-          "child": [
-            {
-              "title": "PLC统计",
-              "href": "/plc",
-              "icon": "layui-icon layui-icon-component",
-              "target": "_self"
-            }
-          ]
-        },
-        {
           "title": "账号管理",
           "href": "",
           "icon": "fa fa-home",
@@ -156,12 +156,6 @@
               "target": "_self"
             }
           ]
-        },
-        {
-          "title": "test",
-          "href": "/test",
-          "icon": "fa fa-home",
-          "target": "_self"
         }
       ]
     }
