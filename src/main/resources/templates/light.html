@@ -61,6 +61,16 @@
         // lineChart.showLoading();
         var times = []; //x
         var lights = []; //y
+        var mytext;
+        if (id == 1) {
+            mytext = "SCHNEIDER TM221CE16R"
+        } else if (id == 2) {
+            mytext = "LOGO! 12/24RCE"
+        } else if (id == 3) {
+            mytext = "SIMATIC S7-1200"
+        } else if (id == 4) {
+            mytext = "SIMATIC S7-200 SMART"
+        }
         $.ajax({
             type:"get",
             url:"http://localhost:9981/sensordata/getlight/"+id,
@@ -83,7 +93,7 @@
         lineChart.hideLoading();
         var option={
             title: {
-                text: 'PLC-' + id,
+                text: mytext,
             },
             toolbox: {
                 show: true,

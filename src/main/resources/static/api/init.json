@@ -36,25 +36,25 @@
           "target": "_self",
           "child": [
             {
-              "title": "PLC-1",
+              "title": "SCHNEIDER TM221CE16R",
               "href": "/plc/1",
               "icon": "layui-icon layui-icon-user",
               "target": "_self"
             },
             {
-              "title": "PLC-2",
+              "title": "LOGO! 12/24RCE",
               "href": "/plc/2",
               "icon": "layui-icon layui-icon-user",
               "target": "_self"
             },
             {
-              "title": "PLC-3",
+              "title": "SIMATIC S7-1200",
               "href": "/plc/3",
               "icon": "layui-icon layui-icon-user",
               "target": "_self"
             },
             {
-              "title": "PLC-4",
+              "title": "SIMATIC S7-200 SMART",
               "href": "/plc/4",
               "icon": "layui-icon layui-icon-user",
               "target": "_self"
@@ -112,25 +112,25 @@
           "target": "_self",
           "child": [
             {
-              "title": "PLC-1",
+              "title": "SCHNEIDER TM221CE16R",
               "href": "/export/1",
               "icon": "layui-icon layui-icon-component",
               "target": "_self"
             },
             {
-              "title": "PLC-2",
+              "title": "LOGO! 12/24RCE",
               "href": "/export/2",
               "icon": "layui-icon layui-icon-component",
               "target": "_self"
             },
             {
-              "title": "PLC-3",
+              "title": "SIMATIC S7-1200",
               "href": "/export/3",
               "icon": "layui-icon layui-icon-component",
               "target": "_self"
             },
             {
-              "title": "PLC-4",
+              "title": "SIMATIC S7-200 SMART",
               "href": "/export/4",
               "icon": "layui-icon layui-icon-component",
               "target": "_self"

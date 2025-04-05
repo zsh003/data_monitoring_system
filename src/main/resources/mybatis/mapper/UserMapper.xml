@@ -22,7 +22,7 @@
         where sno=#{sno}
     </update>
     <select id="getapplyList" parameterType="cn.qqcn.entity.vo.ApplyVO" resultMap="applyMap">
-        select sno,sname from user where kind='待审核'
+        select sno,sname from user
     </select>
 
     <select id="countapplyList" parameterType="cn.qqcn.entity.vo.ApplyVO" resultType="Long">

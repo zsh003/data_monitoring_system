@@ -79,7 +79,7 @@
                 )
             </if>
          </where>
-        limit #{page.start},#{page.limit}
+        limit #{page.start}, #{page.limit}
 
     </select>
     <select id="countErrorDataList" resultType="java.lang.Long">
