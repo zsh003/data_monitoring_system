@@ -1,0 +1,4 @@
+pymodbus==2.5.2
+scapy
+matplotlib
+pymysql
