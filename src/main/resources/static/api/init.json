@@ -22,7 +22,7 @@
           "target": "_self",
           "child": [
             {
-              "title": "PLC统计",
+              "title": "设备列表",
               "href": "/plc",
               "icon": "layui-icon layui-icon-component",
               "target": "_self"

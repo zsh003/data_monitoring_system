@@ -83,30 +83,30 @@
 <script th:inline="javascript">
     function renderPLCItem(plc) {
         return `
-            <div class="plc-item" id="plc-item-${plc.id}">
-                <img src="${plc.image}" alt="${plc.title}" class="plc-image">
+            <div class="plc-item" id="plc-item-${plc.plc_id}">
+                <img src="${plc.plc_image}" alt="${plc.plc_name}" class="plc-image">
                 <div class="plc-details">
-                    <h2 style="margin-bottom: 10px">${plc.title}</h2>
-                    <p><strong>IP地址: </strong> ${plc.ipAddress}</p>
-                    <p><strong>IP端口: </strong> ${plc.ipPort}</p>
+                    <h2 style="margin-bottom: 10px">${plc.plc_name}</h2>
+                    <p><strong>IP地址: </strong> ${plc.plc_ip}</p>
+                    <p><strong>IP端口: </strong> ${plc.plc_port}</p>
                     <p>
                         <strong>连接状态: </strong> <span class="plc-status">未测试</span>
                         <span style="color: green; cursor: pointer; margin-left: 30px" class="test-connection"
-                                data-ip="${plc.ipAddress}" data-id="${plc.id}"
+                                data-ip="${plc.plc_ip}" data-id="${plc.plc_id}"
                         >
                         测试连接
                         </span>
                         <span class="loading" style="display: none"></span> <!-- 加载动画 -->
                     </p>
-                    <p><strong>产品系列: </strong> ${plc.range}</p>
-                    <p><strong>产品类型: </strong> ${plc.type}</p>
-                    <p><strong>额定电源电压: </strong> ${plc.voltage}</p>
-                    <p><strong>离散输入数量: </strong> ${plc.inputs}</p>
-                    <p><strong>模拟输入数量: </strong> ${plc.analogInputs}</p>
-                    <p><strong>离散输出类型: </strong> ${plc.outputType}</p>
-                    <p><strong>离散输出数量: </strong> ${plc.outputs}</p>
-                    <p><strong>离散输出电压: </strong> ${plc.outputVoltage}</p>
-                    <p><strong>离散输出电流: </strong> ${plc.outputCurrent}</p>
+                    <p><strong>产品系列: </strong> ${plc.product_series}</p>
+                    <p><strong>产品类型: </strong> ${plc.product_type}</p>
+                    <p><strong>额定电源电压: </strong> ${plc.standard_voltage}</p>
+                    <p><strong>离散输入数量: </strong> ${plc.discrete_input_num}</p>
+                    <p><strong>模拟输入数量: </strong> ${plc.analogue_input_num}</p>
+                    <p><strong>离散输出类型: </strong> ${plc.discrete_output_type}</p>
+                    <p><strong>离散输出数量: </strong> ${plc.discrete_output_num}</p>
+                    <p><strong>离散输出电压: </strong> ${plc.discrete_output_voltage}</p>
+                    <p><strong>离散输出电流: </strong> ${plc.discrete_output_current}</p>
                 </div>
             </div>
         `;
@@ -141,144 +141,33 @@
         });
     }
     function loadPLCData() {
-        // 假数据
-        var plcData = [
-            {
-                id: 1,
-                title: "SCHNEIDER TM221CE16R",
-                image: "/images/plc/1.png",
-                ipAddress: "172.172.12.133",
-                ipPort: "502",
-                range:"标准型",
-                type:"逻辑控制器",
-                voltage:"100...240 V AC",
-                inputs:"9 (符合IEC 61131-2 Type 1)",
-                analogInputs:"2 (输入范围: 0...10 V)",
-                outputType:"继电器常开",
-                outputs:"7 继电器",
-                outputVoltage:"5...125 V DC, 5...250 V AC",
-                outputCurrent:"2 A",
-                status: "在线",
+        var plcData = [];
+        $.ajax({
+            url: '/plc/list',
+            method: 'GET',
+            success: function(data) {
+                console.log(data)
+                plcData = data.data
+                var plcListContainer = $('#plc-list');
+                plcListContainer.empty();
+                plcData.forEach(function (plc) {
+                    plcListContainer.append(renderPLCItem(plc));
+                });
+                // 绑定点击事件
+                $('.test-connection').click(function() {
+                    console.log(11111111111)
+                    var ip = $(this).data('ip'); // 获取data-ip属性值
+                    var cardId = $(this).data('id'); // 获取data-id属性值
+                    console.log(ip, cardId)
+                    //显示加载动画
+                    $(this).next('.loading').show()
+                    testConnection(ip, cardId);
+                });
             },
-            {
-                id: 2,
-                title: "LOGO! 12/24RCE",
-                image: "/images/plc/2.png",
-                ipAddress: "192.168.2.7",
-                ipPort: "503",
-                range:"标准型",
-                type:"PLC主机",
-                voltage:"10.8-28.8V DC",
-                inputs:"8",
-                analogInputs:"4",
-                outputType:"继电器常开",
-                outputs:"4",
-                outputVoltage:"5...125 V DC, 5...250 V AC",
-                outputCurrent:"2 A",
-                status: "离线",
-            },
-            {
-                id: 3,
-                title: "SIMATIC S7-1200",
-                image: "/images/plc/3.png",
-                ipAddress: "192.168.2.6",
-                ipPort: "503",
-                range:"标准型",
-                type:"CPU",
-                voltage:"24V DC",
-                inputs:"14",
-                analogInputs:"2",
-                outputType:"继电器常开",
-                outputs:"10",
-                outputVoltage:"5...125 V DC, 5...250 V AC",
-                outputCurrent:"2 A",
-                status: "离线",
-            },
-            {
-                id: 4,
-                title: "SIMATIC S7-200 SMART",
-                image: "/images/plc/4.png",
-                ipAddress: "192.168.2.1",
-                ipPort: "503",
-                range:"标准型",
-                type:"逻辑控制器",
-                voltage:"220V AC 或 110V DC",
-                inputs:"12",
-                analogInputs:"2 (输入范围: 0...10 V)",
-                outputType:"继电器常开",
-                outputs:"8",
-                outputVoltage:"5...125 V DC, 5...250 V AC",
-                outputCurrent:"2 A",
-                status: "离线",
-            },
-            {
-                id: 5,
-                title: "SIMATIC LE5118",
-                image: "/images/plc/5.png",
-                ipAddress: "192.168.2.5",
-                ipPort: "503",
-                range:"标准型",
-                type:"逻辑控制器",
-                voltage:"220V AC",
-                inputs:"24",
-                analogInputs:"2 (输入范围: 0...10 V)",
-                outputType:"继电器常开",
-                outputs:"16",
-                outputVoltage:"24VDC",
-                outputCurrent:"2 A",
-                status: "离线",
-            },
-            {
-                id: 6,
-                title: "HOLLYSYS LM3109",
-                image: "/images/plc/6.png",
-                ipAddress: "192.168.2.2",
-                ipPort: "503",
-                range:"紧凑型",
-                type:"逻辑控制器",
-                voltage:"100-240V AC",
-                inputs:"20",
-                analogInputs:"2 (输入范围: 0...10 V)",
-                outputType:"继电器常开",
-                outputs:"16",
-                outputVoltage:"24VDC",
-                outputCurrent:"0.5 A",
-                status: "离线",
-            },
-            {
-                "id": 7,
-                "title": "OMRON CP1E-N20DR-A",
-                "image": "/images/plc/7.png",
-                "ipAddress": "192.168.2.3",
-                "ipPort": "506",
-                "range": "紧凑型",
-                "type": "PLC",
-                "voltage": "100-240V AC, 50/60Hz",
-                "inputs": "24 (12点源型输入, 12点漏型输入)",
-                "analogInputs": "2 (输入范围: 0...10 V)",
-                "outputType": "晶体管输出",
-                "outputs": "16",
-                "outputVoltage": "5-24VDC",
-                "outputCurrent": "0.5A",
-                "status": "离线"
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error during API call:', textStatus, errorThrown);
             }
-        ];
-
-        var plcListContainer = $('#plc-list');
-        plcListContainer.empty();
-        plcData.forEach(function (plc) {
-            plcListContainer.append(renderPLCItem(plc));
         });
-
-        // 绑定点击事件
-        $('.test-connection').click(function() {
-            var ip = $(this).data('ip'); // 获取data-ip属性值
-            var cardId = $(this).data('id'); // 获取data-id属性值
-            //显示加载动画
-            $(this).next('.loading').show()
-            testConnection(ip, cardId);
-        });
-
     }
 
     $(document).ready(function () {

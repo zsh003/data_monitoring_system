@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.qqcn.mapper.PlcMapper">
+
+    <resultMap id="BaseResultMap" type="cn.qqcn.entity.Plc">
+            <id property="plc_id" column="plc_id" jdbcType="INTEGER"/>
+            <result property="plc_name" column="plc_name" jdbcType="VARCHAR"/>
+            <result property="plc_ip" column="plc_ip" jdbcType="VARCHAR"/>
+            <result property="plc_port" column="plc_port" jdbcType="INTEGER"/>
+            <result property="connection_status" column="connection_status" jdbcType="VARCHAR"/>
+            <result property="product_series" column="product_series" jdbcType="VARCHAR"/>
+            <result property="product_type" column="product_type" jdbcType="VARCHAR"/>
+            <result property="standard_voltage" column="standard_voltage" jdbcType="VARCHAR"/>
+            <result property="discrete_input_num" column="discrete_input_num" jdbcType="VARCHAR"/>
+            <result property="analogue_input_num" column="analogue_input_num" jdbcType="VARCHAR"/>
+            <result property="discrete_output_type" column="discrete_output_type" jdbcType="VARCHAR"/>
+            <result property="discrete_output_num" column="discrete_output_num" jdbcType="VARCHAR"/>
+            <result property="discrete_output_voltage" column="discrete_output_voltage" jdbcType="VARCHAR"/>
+            <result property="discrete_output_current" column="discrete_output_current" jdbcType="VARCHAR"/>
+            <result property="plc_image" column="plc_image" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="list" resultType="cn.qqcn.entity.Plc" resultMap="BaseResultMap">
+        select * from plc
+    </select>
+</mapper>
