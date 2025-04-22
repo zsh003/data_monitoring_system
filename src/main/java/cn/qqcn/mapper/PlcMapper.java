@@ -1,21 +1,16 @@
 package cn.qqcn.mapper;
 
-import cn.qqcn.common.vo.Page;
 import cn.qqcn.entity.Plc;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/**
-* @author 29808
-* @description 针对表【plc】的数据库操作Mapper
-* @createDate 2025-04-17 17:21:55
-* @Entity generator.domain.Plc
-*/
+@Mapper
 public interface PlcMapper {
-
-    List<Plc> list();
+    List<Plc> getPlcList(@Param("plcName") String plcName, @Param("plcIp") String plcIp);
+    Plc getPlcById(@Param("id") Integer id);
+    int addPlc(Plc plc);
+    int updatePlc(Plc plc);
+    int deletePlc(@Param("id") Integer id);
 }
-
-
-
-

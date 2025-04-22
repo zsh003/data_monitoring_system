@@ -5,23 +5,101 @@
 <mapper namespace="cn.qqcn.mapper.PlcMapper">
 
     <resultMap id="BaseResultMap" type="cn.qqcn.entity.Plc">
-            <id property="plc_id" column="plc_id" jdbcType="INTEGER"/>
-            <result property="plc_name" column="plc_name" jdbcType="VARCHAR"/>
-            <result property="plc_ip" column="plc_ip" jdbcType="VARCHAR"/>
-            <result property="plc_port" column="plc_port" jdbcType="INTEGER"/>
-            <result property="connection_status" column="connection_status" jdbcType="VARCHAR"/>
-            <result property="product_series" column="product_series" jdbcType="VARCHAR"/>
-            <result property="product_type" column="product_type" jdbcType="VARCHAR"/>
-            <result property="standard_voltage" column="standard_voltage" jdbcType="VARCHAR"/>
-            <result property="discrete_input_num" column="discrete_input_num" jdbcType="VARCHAR"/>
-            <result property="analogue_input_num" column="analogue_input_num" jdbcType="VARCHAR"/>
-            <result property="discrete_output_type" column="discrete_output_type" jdbcType="VARCHAR"/>
-            <result property="discrete_output_num" column="discrete_output_num" jdbcType="VARCHAR"/>
-            <result property="discrete_output_voltage" column="discrete_output_voltage" jdbcType="VARCHAR"/>
-            <result property="discrete_output_current" column="discrete_output_current" jdbcType="VARCHAR"/>
-            <result property="plc_image" column="plc_image" jdbcType="VARCHAR"/>
+        <id property="plc_id" column="plc_id" jdbcType="INTEGER"/>
+        <result property="plc_name" column="plc_name" jdbcType="VARCHAR"/>
+        <result property="plc_ip" column="plc_ip" jdbcType="VARCHAR"/>
+        <result property="plc_port" column="plc_port" jdbcType="INTEGER"/>
+        <result property="connection_status" column="connection_status" jdbcType="VARCHAR"/>
+        <result property="product_series" column="product_series" jdbcType="VARCHAR"/>
+        <result property="product_type" column="product_type" jdbcType="VARCHAR"/>
+        <result property="standard_voltage" column="standard_voltage" jdbcType="VARCHAR"/>
+        <result property="discrete_input_num" column="discrete_input_num" jdbcType="VARCHAR"/>
+        <result property="analogue_input_num" column="analogue_input_num" jdbcType="VARCHAR"/>
+        <result property="discrete_output_type" column="discrete_output_type" jdbcType="VARCHAR"/>
+        <result property="discrete_output_num" column="discrete_output_num" jdbcType="VARCHAR"/>
+        <result property="discrete_output_voltage" column="discrete_output_voltage" jdbcType="VARCHAR"/>
+        <result property="discrete_output_current" column="discrete_output_current" jdbcType="VARCHAR"/>
+        <result property="plc_image" column="plc_image" jdbcType="VARCHAR"/>
     </resultMap>
-    <select id="list" resultType="cn.qqcn.entity.Plc" resultMap="BaseResultMap">
-        select * from plc
+
+    <!-- 获取PLC列表（支持按名称和IP搜索） -->
+    <select id="getPlcList" resultMap="BaseResultMap">
+        SELECT * FROM plc
+        <where>
+            <if test="plcName != null and plcName != ''">
+                AND plc_name LIKE CONCAT('%', #{plcName}, '%')
+            </if>
+            <if test="plcIp != null and plcIp != ''">
+                AND plc_ip LIKE CONCAT('%', #{plcIp}, '%')
+            </if>
+        </where>
+        ORDER BY plc_id DESC
     </select>
+
+    <!-- 根据ID获取PLC详情 -->
+    <select id="getPlcById" resultMap="BaseResultMap">
+        SELECT * FROM plc WHERE plc_id = #{id}
+    </select>
+
+    <!-- 新增PLC -->
+    <insert id="addPlc" parameterType="cn.qqcn.entity.Plc" useGeneratedKeys="true" keyProperty="plc_id">
+        INSERT INTO plc (
+            plc_name,
+            plc_ip,
+            plc_port,
+            connection_status,
+            product_series,
+            product_type,
+            standard_voltage,
+            discrete_input_num,
+            analogue_input_num,
+            discrete_output_type,
+            discrete_output_num,
+            discrete_output_voltage,
+            discrete_output_current,
+            plc_image
+        ) VALUES (
+                     #{plc_name},
+                     #{plc_ip},
+                     #{plc_port},
+                     #{connection_status},
+                     #{product_series},
+                     #{product_type},
+                     #{standard_voltage},
+                     #{discrete_input_num},
+                     #{analogue_input_num},
+                     #{discrete_output_type},
+                     #{discrete_output_num},
+                     #{discrete_output_voltage},
+                     #{discrete_output_current},
+                     #{plc_image}
+                 )
+    </insert>
+
+    <!-- 修改PLC -->
+    <update id="updatePlc" parameterType="cn.qqcn.entity.Plc">
+        UPDATE plc
+        <set>
+            <if test="plc_name != null">plc_name = #{plc_name},</if>
+            <if test="plc_ip != null">plc_ip = #{plc_ip},</if>
+            <if test="plc_port != null">plc_port = #{plc_port},</if>
+            <if test="connection_status != null">connection_status = #{connection_status},</if>
+            <if test="product_series != null">product_series = #{product_series},</if>
+            <if test="product_type != null">product_type = #{product_type},</if>
+            <if test="standard_voltage != null">standard_voltage = #{standard_voltage},</if>
+            <if test="discrete_input_num != null">discrete_input_num = #{discrete_input_num},</if>
+            <if test="analogue_input_num != null">analogue_input_num = #{analogue_input_num},</if>
+            <if test="discrete_output_type != null">discrete_output_type = #{discrete_output_type},</if>
+            <if test="discrete_output_num != null">discrete_output_num = #{discrete_output_num},</if>
+            <if test="discrete_output_voltage != null">discrete_output_voltage = #{discrete_output_voltage},</if>
+            <if test="discrete_output_current != null">discrete_output_current = #{discrete_output_current},</if>
+            <if test="plc_image != null">plc_image = #{plc_image},</if>
+        </set>
+        WHERE plc_id = #{plc_id}
+    </update>
+
+    <!-- 删除PLC -->
+    <delete id="deletePlc">
+        DELETE FROM plc WHERE plc_id = #{id}
+    </delete>
 </mapper>

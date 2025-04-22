@@ -29,6 +29,7 @@
             border: 1px solid #ccc; /* 边框颜色和宽度 */
             border-radius: 5px; /* 圆角程度 */
             box-shadow: 2px 2px 12px rgba(0,0,0,0.1); /* 轻微阴影效果 */
+            position: relative;
         }
 
         .plc-item:last-child {
@@ -59,6 +60,35 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+        /* 修改PLC操作按钮的样式 */
+        .plc-actions {
+            position: static;
+            display: inline-block;
+            margin-left: 20px;
+        }
+
+        .plc-name-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        /*.plc-actions {*/
+        /*    position: absolute;*/
+        /*    top: 10px;*/
+        /*    right: 10px;*/
+        /*}*/
+
+        /*.plc-actions button {*/
+        /*    margin-left: 5px;*/
+        /*}*/
+
+        .search-form {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f8f8;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -66,8 +96,45 @@
     <div class="layui-row layui-col-space15">
         <div class="layui-col-xs12 layui-col-md12">
             <div class="layui-card">
-                <div class="layui-card-header">PLC列表</div>
+                <div class="layui-card-header">
+                    <div class="layui-row">
+                        <div class="layui-col-md6">PLC列表</div>
+                        <div class="layui-col-md6" style="text-align: right;">
+                            <button class="layui-btn layui-btn-normal" id="add-plc-btn">
+                                <i class="fa fa-plus"></i> 新增PLC
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <div class="layui-card-body">
+                    <!-- 搜索表单 -->
+                    <div class="search-form">
+                        <form class="layui-form" id="search-form">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">PLC名称</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="plcName" placeholder="请输入PLC名称" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">IP地址</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="plcIp" placeholder="请输入IP地址" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <button class="layui-btn" lay-submit lay-filter="search-btn">
+                                        <i class="layui-icon">&#xe615;</i> 搜索
+                                    </button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">
+                                        <i class="layui-icon">&#xe669;</i> 重置
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
                     <div id="plc-list">
                         <!-- 动态加载的PLC列表 -->
                     </div>
@@ -75,6 +142,104 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- 新增/编辑PLC表单 -->
+<div id="plc-form-dialog" style="display: none; padding: 20px;">
+    <form class="layui-form" id="plc-form" lay-filter="plc-form">
+        <input type="hidden" name="plc_id" id="plc_id">
+        <div class="layui-form-item">
+            <label class="layui-form-label">PLC名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="plc_name" required lay-verify="required" placeholder="请输入PLC名称" class="layui-input" id="plc-name-input" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">IP地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="plc_ip" required lay-verify="required|ip" placeholder="请输入IP地址" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">IP端口</label>
+            <div class="layui-input-block">
+                <input type="number" name="plc_port" required lay-verify="required|number" placeholder="请输入IP端口" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">产品系列</label>
+            <div class="layui-input-block">
+                <input type="text" name="product_series" required lay-verify="required" placeholder="请输入产品系列" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">产品类型</label>
+            <div class="layui-input-block">
+                <input type="text" name="product_type" required lay-verify="required" placeholder="请输入产品类型" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">额定电源电压</label>
+            <div class="layui-input-block">
+                <input type="text" name="standard_voltage" required lay-verify="required" placeholder="请输入额定电源电压" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">离散输入数量</label>
+            <div class="layui-input-block">
+                <input type="number" name="discrete_input_num" required lay-verify="required|number" placeholder="请输入离散输入数量" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">模拟输入数量</label>
+            <div class="layui-input-block">
+                <input type="number" name="analogue_input_num" required lay-verify="required|number" placeholder="请输入模拟输入数量" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">离散输出类型</label>
+            <div class="layui-input-block">
+                <input type="text" name="discrete_output_type" required lay-verify="required" placeholder="请输入离散输出类型" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">离散输出数量</label>
+            <div class="layui-input-block">
+                <input type="number" name="discrete_output_num" required lay-verify="required|number" placeholder="请输入离散输出数量" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">离散输出电压</label>
+            <div class="layui-input-block">
+                <input type="text" name="discrete_output_voltage" required lay-verify="required" placeholder="请输入离散输出电压" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">离散输出电流</label>
+            <div class="layui-input-block">
+                <input type="text" name="discrete_output_current" required lay-verify="required" placeholder="请输入离散输出电流" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">PLC图片</label>
+            <div class="layui-input-block">
+                <div class="layui-upload">
+                    <button type="button" class="layui-btn" id="upload-btn">上传图片</button>
+                    <div class="layui-upload-list">
+                        <img class="layui-upload-img" id="preview-image" style="max-width: 0px; display: none;">
+                        <input type="hidden" name="plc_image" id="plc_image">
+                        <div id="upload-msg"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="plc-form-submit">提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
 </div>
 
 <script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}" charset="utf-8"></script>
@@ -86,7 +251,17 @@
             <div class="plc-item" id="plc-item-${plc.plc_id}">
                 <img src="${plc.plc_image}" alt="${plc.plc_name}" class="plc-image">
                 <div class="plc-details">
-                    <h2 style="margin-bottom: 10px">${plc.plc_name}</h2>
+                    <div class="plc-name-container">
+                        <h2 style="margin: 0">${plc.plc_name}</h2>
+                        <div class="plc-actions">
+                            <button class="layui-btn layui-btn-xs edit-plc" data-id="${plc.plc_id}">
+                                <i class="fa fa-edit"></i> 修改
+                            </button>
+                            <button class="layui-btn layui-btn-xs layui-btn-danger delete-plc" data-id="${plc.plc_id}">
+                                <i class="fa fa-trash"></i> 删除
+                            </button>
+                        </div>
+                    </div>
                     <p><strong>IP地址: </strong> ${plc.plc_ip}</p>
                     <p><strong>IP端口: </strong> ${plc.plc_port}</p>
                     <p>
@@ -140,11 +315,16 @@
             }
         });
     }
-    function loadPLCData() {
+
+    function loadPLCData(searchParams) {
         var plcData = [];
         $.ajax({
             url: '/plc/list',
             method: 'GET',
+            // 过滤掉空值参数
+            data: $.param(Object.fromEntries(
+                Object.entries(searchParams).filter(([_, v]) => v !== ''))
+            ),
             success: function(data) {
                 console.log(data)
                 plcData = data.data
@@ -155,13 +335,23 @@
                 });
                 // 绑定点击事件
                 $('.test-connection').click(function() {
-                    console.log(11111111111)
                     var ip = $(this).data('ip'); // 获取data-ip属性值
                     var cardId = $(this).data('id'); // 获取data-id属性值
-                    console.log(ip, cardId)
                     //显示加载动画
                     $(this).next('.loading').show()
                     testConnection(ip, cardId);
+                });
+
+                // 绑定编辑按钮点击事件
+                $('.edit-plc').click(function() {
+                    var plcId = $(this).data('id');
+                    editPLC(plcId);
+                });
+
+                // 绑定删除按钮点击事件
+                $('.delete-plc').click(function() {
+                    var plcId = $(this).data('id');
+                    deletePLC(plcId);
                 });
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -170,11 +360,161 @@
         });
     }
 
+    function editPLC(plcId) {
+        $.ajax({
+            url: '/plc/detail/' + plcId,
+            method: 'GET',
+            success: function(data) {
+                if(data.code === 0) {
+                    var plc = data.data;
+                    // 填充表单
+                    layui.form.val('plc-form', {
+                        plc_id: plc.plc_id,
+                        plc_name: plc.plc_name,
+                        plc_ip: plc.plc_ip,
+                        plc_port: plc.plc_port,
+                        product_series: plc.product_series,
+                        product_type: plc.product_type,
+                        standard_voltage: plc.standard_voltage,
+                        discrete_input_num: plc.discrete_input_num,
+                        analogue_input_num: plc.analogue_input_num,
+                        discrete_output_type: plc.discrete_output_type,
+                        discrete_output_num: plc.discrete_output_num,
+                        discrete_output_voltage: plc.discrete_output_voltage,
+                        discrete_output_current: plc.discrete_output_current,
+                        plc_image: plc.plc_image
+                    });
+
+                    // 显示预览图片
+                    if(plc.plc_image) {
+                        $('#preview-image').attr('src', plc.plc_image).show();
+                    }
+
+                    // 设置PLC名称输入框为只读
+                    $('#plc-name-input').prop('readonly', true)
+                        .css('background-color', '#f2f2f2')
+                        .css('color', '#666');
+
+                    // 打开对话框
+                    layer.open({
+                        type: 1,
+                        title: '修改PLC',
+                        area: ['800px', '90%'],
+                        content: $('#plc-form-dialog')
+                    });
+                } else {
+                    layui.layer.msg(data.msg || '获取PLC信息失败');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error during API call:', textStatus, errorThrown);
+                layui.layer.msg('获取PLC信息失败');
+            }
+        });
+    }
+
+    function deletePLC(plcId) {
+        layer = layui.layer;
+        layer.confirm('确定要删除这个PLC吗？', {
+            icon: 3,
+            title: '提示'
+        }, function(index) {
+            $.ajax({
+                url: '/plc/delete/' + plcId,
+                method: 'POST',
+                success: function(data) {
+                    if(data.code === 0) {
+                        layer.msg('删除成功', {icon: 1});
+                        loadPLCData();
+                    } else {
+                        layer.msg(data.msg || '删除失败', {icon: 2});
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error during API call:', textStatus, errorThrown);
+                    layer.msg('删除失败', {icon: 2});
+                }
+            });
+            layer.close(index);
+        });
+    }
+
     $(document).ready(function () {
+        layui.use(['form', 'upload', 'layer'], function() {
+            var form = layui.form;
+            var upload = layui.upload;
+            var layer = layui.layer;
+
+            // 初始化搜索表单
+            form.on('submit(search-btn)', function(data) {
+                console.log("search", data)
+                loadPLCData(data.field);
+                return false;
+            });
+
+            // 新增PLC按钮点击事件
+            $('#add-plc-btn').click(function() {
+                // 重置表单
+                $('#plc-form')[0].reset();
+                $('#preview-image').hide();
+                $('#plc_id').val('');
+                $('#plc_image').val('');
+
+                // 打开对话框
+                layer.open({
+                    type: 1,
+                    title: '新增PLC',
+                    area: ['800px', '90%'],
+                    content: $('#plc-form-dialog')
+                });
+            });
+
+            // 图片上传
+            upload.render({
+                elem: '#upload-btn',
+                url: '/plc/upload',
+                accept: 'images',
+                acceptMime: 'image/*',
+                done: function(res) {
+                    if(res.code === 0) {
+                        $('#preview-image').attr('src', res.data.url).show();
+                        $('#plc_image').val(res.data.url);
+                        $('#upload-msg').html('<span style="color: green;">上传成功</span>');
+                    } else {
+                        $('#upload-msg').html('<span style="color: red;">' + (res.msg || '上传失败') + '</span>');
+                    }
+                },
+                error: function() {
+                    $('#upload-msg').html('<span style="color: red;">上传失败</span>');
+                }
+            });
+
+            // 表单提交
+            form.on('submit(plc-form-submit)', function(data) {
+                var url = data.field.plc_id ? '/plc/update' : '/plc/add';
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data.field),
+                    success: function(res) {
+                        if(res.code === 0) {
+                            layer.msg(data.field.plc_id ? '修改成功' : '新增成功', {icon: 1});
+                            layer.closeAll();
+                            loadPLCData();
+                        } else {
+                            layer.msg(res.msg || (data.field.plc_id ? '修改失败' : '新增失败'), {icon: 2});
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error during API call:', textStatus, errorThrown);
+                        layer.msg(data.field.plc_id ? '修改失败' : '新增失败', {icon: 2});
+                    }
+                });
+                return false;
+            });
+        });
+
         loadPLCData();
-        // 每分钟刷新一次PLC列表（模拟实时更新）
-        //setInterval(loadPLCData, 60000);
     });
-</script>
-</body>
-</html>
+</script> </body> </html>
