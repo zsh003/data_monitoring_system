@@ -35,10 +35,10 @@
                 </div>
             </div>
 
-            <!-- 参数1和参数2范围在同一行 -->
+            <!-- 温度和速度范围在同一行 -->
             <div class="layui-form-item layui-inline">
                 <div class="layui-inline">
-                    <label class="layui-form-label">参数1范围</label>
+                    <label class="layui-form-label">温度范围</label>
                     <div class="layui-input-inline">
                         <input type="number" name="tempMin" placeholder="最小值" autocomplete="off" class="layui-input">
                     </div>
@@ -47,7 +47,7 @@
                     </div>
                 </div>
                 <div class="layui-inline">
-                    <label class="layui-form-label">参数2范围</label>
+                    <label class="layui-form-label">速度范围</label>
                     <div class="layui-input-inline">
                         <input type="number" name="speedMin" placeholder="最小值" autocomplete="off" class="layui-input">
                     </div>
@@ -57,10 +57,10 @@
                 </div>
             </div>
 
-            <!-- 参数3和参数4范围在同一行 -->
+            <!-- 亮度和角度范围在同一行 -->
             <div class="layui-form-item layui-inline">
                 <div class="layui-inline">
-                    <label class="layui-form-label">参数3范围</label>
+                    <label class="layui-form-label">亮度范围</label>
                     <div class="layui-input-inline">
                         <input type="number" name="lightMin" placeholder="最小值" autocomplete="off" class="layui-input">
                     </div>
@@ -69,7 +69,7 @@
                     </div>
                 </div>
                 <div class="layui-inline">
-                    <label class="layui-form-label">参数4范围</label>
+                    <label class="layui-form-label">角度范围</label>
                     <div class="layui-input-inline">
                         <input type="number" name="angleMin" placeholder="最小值" autocomplete="off" class="layui-input">
                     </div>
@@ -130,10 +130,10 @@
                             var sec = date.getSeconds();
                             return y + "-" + (m < 10 ? ('0' + m) : m) + "-" + (d < 10 ? ('0' + d) : d) + " " + (h < 10 ? ('0' + h) : h) + ":" + (min < 10 ? ('0' + min) : min) + ":" + (sec < 10 ? ('0' + sec) : sec);
                         }}
-                        ,{field: 'temperature', title: '参数1', width:120, sort: true ,align: 'center'}
-                        ,{field: 'speed', title: '参数2', width:120 , sort: true,align: 'center'}
-                        ,{field: 'light', title: '参数3', width: 120 , sort: true,align: 'center'}
-                        ,{field: 'angle', title: '参数4', width: 120 , sort: true,align: 'center'}
+                        ,{field: 'temperature', title: '温度', width:120, sort: true ,align: 'center'}
+                        ,{field: 'speed', title: '速度', width:120 , sort: true,align: 'center'}
+                        ,{field: 'light', title: '亮度', width: 120 , sort: true,align: 'center'}
+                        ,{field: 'angle', title: '角度', width: 120 , sort: true,align: 'center'}
                         ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:100, align:'center'} // 使用模板定义的操作列
                     ]
                 ]

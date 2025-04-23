@@ -80,25 +80,25 @@
           "target": "_self",
           "child": [
             {
-              "title": "参数1图表",
+              "title": "温度图表",
               "href": "/tem",
               "icon": "layui-icon layui-icon-user",
               "target": "_self"
             },
             {
-              "title": "参数2图表",
+              "title": "速度图表",
               "href": "/speed",
               "icon": "layui-icon layui-icon-user",
               "target": "_self"
             },
             {
-              "title": "参数3图表",
+              "title": "亮度图表",
               "href": "/light",
               "icon": "layui-icon layui-icon-user",
               "target": "_self"
             },
             {
-              "title": "参数4图表",
+              "title": "角度图表",
               "href": "/angle",
               "icon": "layui-icon layui-icon-user",
               "target": "_self"
