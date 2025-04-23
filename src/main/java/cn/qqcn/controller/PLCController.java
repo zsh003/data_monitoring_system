@@ -31,6 +31,8 @@ public class PLCController {
 
     @PostMapping("/add")
     public ResultVO<Object> addPlc(@RequestBody Plc plc) {
+        //设置默认图片
+        plc.setPlc_image("/images/plc/1.png");
         int result = plcService.addPlc(plc);
         if (result > 0) {
             return ResultVO.success("添加PLC成功");

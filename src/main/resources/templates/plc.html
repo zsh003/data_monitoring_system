@@ -220,19 +220,19 @@
                 <input type="text" name="discrete_output_current" required lay-verify="required" placeholder="请输入离散输出电流" class="layui-input">
             </div>
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">PLC图片</label>
-            <div class="layui-input-block">
-                <div class="layui-upload">
-                    <button type="button" class="layui-btn" id="upload-btn">上传图片</button>
-                    <div class="layui-upload-list">
-                        <img class="layui-upload-img" id="preview-image" style="max-width: 0px; display: none;">
-                        <input type="hidden" name="plc_image" id="plc_image">
-                        <div id="upload-msg"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!--        <div class="layui-form-item">-->
+<!--            <label class="layui-form-label">PLC图片</label>-->
+<!--            <div class="layui-input-block">-->
+<!--                <div class="layui-upload">-->
+<!--                    <button type="button" class="layui-btn" id="upload-btn">上传图片</button>-->
+<!--                    <div class="layui-upload-list">-->
+<!--                        <img class="layui-upload-img" id="preview-image" style="max-width: 0px; display: none;">-->
+<!--                        <input type="hidden" name="plc_image" id="plc_image">-->
+<!--                        <div id="upload-msg"></div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class="layui-btn" lay-submit lay-filter="plc-form-submit">提交</button>
@@ -387,7 +387,8 @@
 
                     // 显示预览图片
                     if(plc.plc_image) {
-                        $('#preview-image').attr('src', plc.plc_image).show();
+                        console.log('image', plc.plc_image)
+                        $('#preview-image').attr('src','http://localhost:9981/' + plc.plc_image).show();
                     }
 
                     // 设置PLC名称输入框为只读
@@ -425,7 +426,7 @@
                 success: function(data) {
                     if(data.code === 0) {
                         layer.msg('删除成功', {icon: 1});
-                        loadPLCData();
+                        loadPLCData({});
                     } else {
                         layer.msg(data.msg || '删除失败', {icon: 2});
                     }
@@ -459,7 +460,10 @@
                 $('#preview-image').hide();
                 $('#plc_id').val('');
                 $('#plc_image').val('');
-
+                // 设置PLC名称输入框为可写（新增时）
+                $('#plc-name-input').prop('readonly', false)
+                    .css('background-color', '')
+                    .css('color', '');
                 // 打开对话框
                 layer.open({
                     type: 1,
@@ -501,7 +505,7 @@
                         if(res.code === 0) {
                             layer.msg(data.field.plc_id ? '修改成功' : '新增成功', {icon: 1});
                             layer.closeAll();
-                            loadPLCData();
+                            loadPLCData({});
                         } else {
                             layer.msg(res.msg || (data.field.plc_id ? '修改失败' : '新增失败'), {icon: 2});
                         }
@@ -515,6 +519,6 @@
             });
         });
 
-        loadPLCData();
+        loadPLCData({});
     });
 </script> </body> </html>
