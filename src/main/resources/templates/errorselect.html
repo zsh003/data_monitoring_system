@@ -84,6 +84,33 @@
                 <button class="layui-btn" lay-submit lay-filter="search">搜索</button>
                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
             </div>
+
+            <!-- 在筛选条件fieldset内添加 -->
+            <div class="layui-form-item">
+                <label class="layui-form-label">报警设置</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="enableAlarm" lay-skin="switch" lay-text="启用|禁用" lay-filter="alarmSwitch">
+                </div>
+            </div>
+
+            <div id="alarmSettings" style="display: none; margin-top: 15px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">报警方式</label>
+                    <div class="layui-input-block">
+                        <select name="alarmMethod" lay-filter="alarmMethod">
+                            <option value="popup">弹窗报警</option>
+                            <option value="sound">声音报警</option>
+                            <option value="both">弹窗+声音</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">间隔(秒)</label>
+                    <div class="layui-input-block">
+                        <input type="number" name="alarmInterval" value="5" min="1" class="layui-input">
+                    </div>
+                </div>
+            </div>
         </fieldset>
     </form>
 
@@ -108,6 +135,46 @@
             var laydate = layui.laydate;
             var table = layui.table;
             var form = layui.form;
+            var alarmTimer = null;
+            var lastAlarmTime = 0;
+            var currentSearchParams = {}; // 保存当前搜索条件
+            // 报警开关监听
+            form.on('switch(alarmSwitch)', function(data){
+                if(data.elem.checked){
+                    $('#alarmSettings').show();
+                    // 如果已经有搜索条件，立即开始报警检查
+                    if(Object.keys(currentSearchParams).length > 0) {
+                        startAlarmCheck();
+                    }
+                }else{
+                    $('#alarmSettings').hide();
+                    stopAlarmCheck();
+                }
+                form.render();
+            });
+            // 开始报警检查
+            function startAlarmCheck() {
+                stopAlarmCheck(); // 先停止之前的检查
+
+                var interval = $('input[name="alarmInterval"]').val() * 1000;
+                alarmTimer = setInterval(function(){
+                    table.reload('datalist', {
+                        where: currentSearchParams,
+                        done: function(res, curr, count){
+                            checkAlarm(res.data, $('select[name="alarmMethod"]').val());
+                        }
+                    });
+                }, interval);
+            }
+
+            // 停止报警检查
+            function stopAlarmCheck() {
+                if(alarmTimer) {
+                    clearInterval(alarmTimer);
+                    alarmTimer = null;
+                }
+            }
+
             table.render({
                 elem: '#datalist'
                 ,url:  ctxPath + 'sensordata/list/error' //数据接口
@@ -140,6 +207,126 @@
                 ,done: function(res, curr, count){
                     console.log("表格渲染完成");
                 }
+            });
+            // 报警检查函数
+            function checkAlarm(data, alarmMethod) {
+                var currentTime = new Date().getTime();
+                if(currentTime - lastAlarmTime < ($('input[name="alarmInterval"]').val() * 1000)) {
+                    return;
+                }
+                lastAlarmTime = currentTime;
+
+                // 检查异常数据
+                var alarmData = [];
+                data.forEach(function(item){
+                    // 温度异常判断
+                    var tempMin = currentSearchParams.tempMin || -Infinity;
+                    var tempMax = currentSearchParams.tempMax || Infinity;
+                    if(item.temperature < tempMin || item.temperature > tempMax) {
+                        alarmData.push({
+                            plcId: item.plcId,
+                            time: item.time,
+                            value: item.temperature,
+                            type: '温度',
+                            status: item.temperature > tempMax ? '过高' : '过低',
+                            threshold: item.temperature > tempMax ? tempMax : tempMin
+                        });
+                    }
+
+                    // 速度异常判断
+                    var speedMin = currentSearchParams.speedMin || -Infinity;
+                    var speedMax = currentSearchParams.speedMax || Infinity;
+                    if(item.speed < speedMin || item.speed > speedMax) {
+                        alarmData.push({
+                            plcId: item.plcId,
+                            time: item.time,
+                            value: item.speed,
+                            type: '速度',
+                            status: item.speed > speedMax ? '过高' : '过低',
+                            threshold: item.speed > speedMax ? speedMax : speedMin
+                        });
+                    }
+
+                    // 亮度异常判断
+                    var lightMin = currentSearchParams.lightMin || -Infinity;
+                    var lightMax = currentSearchParams.lightMax || Infinity;
+                    if(item.light < lightMin || item.light > lightMax) {
+                        alarmData.push({
+                            plcId: item.plcId,
+                            time: item.time,
+                            value: item.light,
+                            type: '亮度',
+                            status: item.light > lightMax ? '过高' : '过低',
+                            threshold: item.light > lightMax ? lightMax : lightMin
+                        });
+                    }
+
+                    // 角度异常判断
+                    var angleMin = currentSearchParams.angleMin || -Infinity;
+                    var angleMax = currentSearchParams.angleMax || Infinity;
+                    if(item.angle < angleMin || item.angle > angleMax) {
+                        alarmData.push({
+                            plcId: item.plcId,
+                            time: item.time,
+                            value: item.angle,
+                            type: '角度',
+                            status: item.angle > angleMax ? '过高' : '过低',
+                            threshold: item.angle > angleMax ? angleMax : angleMin
+                        });
+                    }
+                });
+
+                if(alarmData.length > 0) {
+                    triggerAlarm(alarmData, alarmMethod);
+                }
+            }
+
+            // 触发报警
+            function triggerAlarm(alarmData, method) {
+                var alarmContent = '<div style="padding: 20px;">';
+                alarmContent += '<h3>检测到异常数据：</h3><ul>';
+
+                alarmData.forEach(function(item){
+                    alarmContent += `<li>PLC ${item.plcId} 的${item.type}${item.status} (当前值: ${item.value}, 阈值: ${item.threshold})</li>`;
+                });
+
+                alarmContent += '</ul></div>';
+
+                if(method === 'popup' || method === 'both') {
+                    layer.open({
+                        type: 1,
+                        title: '异常数据报警',
+                        area: ['500px', '300px'],
+                        content: alarmContent,
+                        btn: ['确认'],
+                        yes: function(index){
+                            layer.close(index);
+                        }
+                    });
+                }
+
+                if(method === 'sound' || method === 'both') {
+                    // 播放报警声音
+                    var audio = new Audio('https://www.soundjay.com/buttons/sounds/beep-07.mp3');
+                    audio.play();
+                }
+            }
+            // 表格重载监听
+            form.on('submit(search)', function(data){
+                // 保存当前搜索条件
+                currentSearchParams = data.field;
+
+                table.reload('datalist', {
+                    where: currentSearchParams,
+                    done: function(res, curr, count){
+                        // 如果启用了报警，检查当前搜索结果
+                        if($('input[name="enableAlarm"]').is(':checked')) {
+                            checkAlarm(res.data, $('select[name="alarmMethod"]').val());
+                            startAlarmCheck();
+                        }
+                    }
+                });
+                return false;
             });
             // 监听工具条
             table.on('tool(datalist)', function(obj){
@@ -176,13 +363,13 @@
                 }
             });
 
-            form.on('submit(search)', function(data){
-                console.log(data)
-                table.reload('datalist', {
-                    where: data.field //向服务器发送的请求参数
-                });
-                return false; //阻止表单跳转。如果需要跳转，则去掉这行。
-            });
+            // form.on('submit(search)', function(data){
+            //     console.log(data)
+            //     table.reload('datalist', {
+            //         where: data.field //向服务器发送的请求参数
+            //     });
+            //     return false; //阻止表单跳转。如果需要跳转，则去掉这行。
+            // });
         })
 </script>
 </body>
