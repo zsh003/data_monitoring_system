@@ -10,6 +10,7 @@ import threading
 import time
 import sys
 from concurrent.futures import ThreadPoolExecutor
+import subprocess
 
 class SensorDataGenerator:
     def __init__(self, plc_id, seed=None):
@@ -63,6 +64,9 @@ class ModbusServer:
         }
         self.current_time = dt.now()  # 当前系统时间
 
+        # 模拟PLC IP地址
+        self.plc_ips = {i+1: f"192.168.2.{i+1}" for i in range(plc_count)}
+
         # 初始化数据存储
         self.store = ModbusSlaveContext(
             hr=ModbusSequentialDataBlock(0, [0] * 100),  # 用于存储传感器数据
@@ -99,8 +103,8 @@ class ModbusServer:
         update_thread.start()
 
         # 启动Modbus服务器
-        print("Starting Modbus TCP server on localhost:5020")
-        StartTcpServer(self.context, address=("localhost", 5020))
+        print("Starting Modbus TCP server on 192.168.2.1-4:5020")
+        StartTcpServer(self.context, address=("0.0.0.0", 5020))
 
 class ModbusClient:
     def __init__(self, host='localhost', port=5020):
@@ -192,16 +196,43 @@ def run_client():
         client.close()
         print("程序已终止")
 
+def configure_virtual_ips():
+    """配置虚拟IP地址（需要管理员权限）"""
+    try:
+        interface_name = "以太网"
+        for i in range(1,5):
+            ip = f"192.168.2.{i}"
+            subprocess.check_call(
+                f'netsh interface ipv4 add address "Ethernet" {ip} 255.255.255.0',
+                shell=True
+            )
+        print("虚拟IP地址配置成功：192.168.2.1-4")
+    except subprocess.CalledProcessError as e:
+        print("IP地址配置失败，请以管理员权限运行程序\n")
+        sys.exit(1)
+
 if __name__ == "__main__":
-    # 启动服务器线程
-    server_thread = threading.Thread(target=run_server)
-    server_thread.daemon = True
-    server_thread.start()
+    # 配置虚拟IP地址
+    configure_virtual_ips()
 
-    # 等待服务器启动
-    time.sleep(3)
+    try:
+        # 启动服务器线程
+        server_thread = threading.Thread(target=run_server)
+        server_thread.daemon = True
+        server_thread.start()
 
-    # 启动客户端
-    print("正在启动系统...")
-    print("服务器已启动，开始运行客户端...")
-    run_client()
+        # 等待服务器启动
+        time.sleep(3)
+
+        # 启动客户端
+        print("正在启动系统...")
+        print("服务器已启动，开始运行客户端...")
+        run_client()
+    finally:
+        # 清理虚拟IP
+        for i in range(1,5):
+            ip = f"192.168.2.{i}"
+            subprocess.call(
+                f'netsh interface ipv4 delete address "Ethernet" {ip}',
+                shell=True
+            )
