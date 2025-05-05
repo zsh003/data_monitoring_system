@@ -30,11 +30,11 @@
 
 
 
-实时modbus传输模拟：
+实时modbus传输模拟，需要修改mysql的相关配置
 
 ```bash
 # python version: 3.13
 pip install -r requirements.txt
-python modbus_realtime_main.py
+python modbus_realtime_main_final.py
 ```
 
