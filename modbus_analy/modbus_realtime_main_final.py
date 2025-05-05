@@ -107,8 +107,8 @@ class ModbusClient:
         self.client = ModbusTcpClient(host, port=port, timeout=5)  # 增加超时时间
         self.db = pymysql.connect(
             host="localhost",
-            user="root",
-            password="root",
+            user="plc",
+            password="123456",
             database="plc"
         )
         self.cursor = self.db.cursor()
