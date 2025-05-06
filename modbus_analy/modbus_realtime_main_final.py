@@ -65,7 +65,7 @@ class ModbusServer:
         self.current_time = dt.now()  # 当前系统时间
 
         # 模拟PLC IP地址
-        self.plc_ips = {i+1: f"192.168.2.{i+1}" for i in range(plc_count)}
+        self.plc_ips = {i+1: f"192.168.102.{i+1}" for i in range(plc_count)}
 
         # 初始化数据存储
         self.store = ModbusSlaveContext(
@@ -103,7 +103,7 @@ class ModbusServer:
         update_thread.start()
 
         # 启动Modbus服务器
-        print("Starting Modbus TCP server on 192.168.2.1-4:5020")
+        print("Starting Modbus TCP server on 192.168.102.1-4:5020")
         StartTcpServer(self.context, address=("0.0.0.0", 5020))
 
 class ModbusClient:
@@ -197,18 +197,47 @@ def run_client():
         print("程序已终止")
 
 def configure_virtual_ips():
+    global interface_name
     """配置虚拟IP地址（需要管理员权限）"""
     try:
-        interface_name = "以太网"
+        # 更可靠的网络接口检测命令
+        interface_cmd = 'powershell "Get-NetAdapter -Physical | Where-Object {$_.Status -eq \'Up\'} | Select-Object -ExpandProperty Name"'
+        interface_name = subprocess.check_output(
+            interface_cmd,
+            shell=True,
+            stderr=subprocess.STDOUT
+        ).decode('gbk').strip()
+
+        # 添加备用检测方式
+        if " " in interface_name or len(interface_name) == 0:
+            interface_cmd_alt = 'netsh interface show interface | findstr /C:"已连接"'
+            interface_output = subprocess.check_output(
+                interface_cmd_alt,
+                shell=True
+            ).decode('gbk')
+            interface_name = interface_output.split()[-1]
+
+        if not interface_name:
+            interface_name = "WLAN"  # 默认接口名称
+
         for i in range(1,5):
-            ip = f"192.168.2.{i}"
+            ip = f"192.168.102.{i}"
             subprocess.check_call(
-                f'netsh interface ipv4 add address "Ethernet" {ip} 255.255.255.0',
+                f'netsh interface ipv4 add address "{interface_name}" {ip} 255.255.255.0',
                 shell=True
             )
-        print("虚拟IP地址配置成功：192.168.2.1-4")
-    except subprocess.CalledProcessError as e:
-        print("IP地址配置失败，请以管理员权限运行程序\n")
+        # 添加路由
+        subprocess.call(f'netsh interface ipv4 set interface "{interface_name}" metric=50', shell=True)
+        subprocess.call(f'netsh interface ipv4 add route 0.0.0.0/0 "{interface_name}" 192.168.102.1 metric=20', shell=True)
+        print(f"虚拟IP地址配置成功：192.168.102.1-4（接口：{interface_name}）")
+    except Exception as e:
+        print(f"配置失败：{str(e)}")
+        print("解决方案：")
+        print("1. 请手动执行以下命令获取接口名称：")
+        print('   netsh interface show interface')
+        print('2. 查看输出中「状态」为「已连接」的接口名称')
+        print('3. 修改代码中interface_name的默认值为实际接口名称')
+        print('4. 示例（无线网络）：interface_name = "WLAN"')
         sys.exit(1)
 
 if __name__ == "__main__":
@@ -231,8 +260,16 @@ if __name__ == "__main__":
     finally:
         # 清理虚拟IP
         for i in range(1,5):
-            ip = f"192.168.2.{i}"
+            ip = f"192.168.102.{i}"
             subprocess.call(
-                f'netsh interface ipv4 delete address "Ethernet" {ip}',
+                f'netsh interface ipv4 delete address "{interface_name}" {ip}',
                 shell=True
             )
+        subprocess.call(
+            f'netsh interface ipv4 set address name="{interface_name}" source=dhcp', 
+            shell=True
+        )
+        subprocess.call(
+            f'netsh interface ipv4 set dnsserver name="{interface_name}" source=dhcp', 
+            shell=True
+        )
