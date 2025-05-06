@@ -200,24 +200,16 @@ def configure_virtual_ips():
     global interface_name
     """配置虚拟IP地址（需要管理员权限）"""
     try:
-        # 更可靠的网络接口检测命令
-        interface_cmd = 'powershell "Get-NetAdapter -Physical | Where-Object {$_.Status -eq \'Up\'} | Select-Object -ExpandProperty Name"'
-        interface_name = subprocess.check_output(
-            interface_cmd,
-            shell=True,
-            stderr=subprocess.STDOUT
-        ).decode('gbk').strip()
-
-        # 添加备用检测方式
-        if " " in interface_name or len(interface_name) == 0:
+        try:
             interface_cmd_alt = 'netsh interface show interface | findstr /C:"已连接"'
             interface_output = subprocess.check_output(
                 interface_cmd_alt,
                 shell=True
             ).decode('gbk')
             interface_name = interface_output.split()[-1]
-
-        if not interface_name:
+            
+            print(f"检测到的网络接口：{interface_name}")
+        except:
             interface_name = "WLAN"  # 默认接口名称
 
         for i in range(1,5):
@@ -226,9 +218,10 @@ def configure_virtual_ips():
                 f'netsh interface ipv4 add address "{interface_name}" {ip} 255.255.255.0',
                 shell=True
             )
-        # 添加路由
         subprocess.call(f'netsh interface ipv4 set interface "{interface_name}" metric=50', shell=True)
-        subprocess.call(f'netsh interface ipv4 add route 0.0.0.0/0 "{interface_name}" 192.168.102.1 metric=20', shell=True)
+        subprocess.call(f'netsh interface ipv4 add route 192.168.102.0/24 "{interface_name}" 192.168.102.254 metric=100', shell=True)
+        subprocess.call('netsh advfirewall set allprofiles state off', shell=True) # 关闭防火墙
+
         print(f"虚拟IP地址配置成功：192.168.102.1-4（接口：{interface_name}）")
     except Exception as e:
         print(f"配置失败：{str(e)}")
@@ -266,6 +259,9 @@ if __name__ == "__main__":
                 shell=True
             )
         subprocess.call(
+            f'netsh interface ipv4 delete route 192.168.102.0/24 "{interface_name}"', shell=True
+        )
+        subprocess.call(
             f'netsh interface ipv4 set address name="{interface_name}" source=dhcp', 
             shell=True
         )
@@ -273,3 +269,4 @@ if __name__ == "__main__":
             f'netsh interface ipv4 set dnsserver name="{interface_name}" source=dhcp', 
             shell=True
         )
+        
